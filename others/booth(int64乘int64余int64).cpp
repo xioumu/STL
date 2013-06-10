@@ -1,0 +1,6 @@
+inline long long mul(long long lhs, long long rhs) {
+	long long lhs2 = lhs % 100000;
+	long long rhs2 = rhs % 100000;
+	return ((lhs / 100000 * rhs2 + rhs / 100000 * lhs2) * 100000 + lhs2 * rhs2) % MOD;
+}
+

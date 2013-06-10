@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>D:\code\acm\模板\数据结构\平衡树.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Special { color: #ff00ff; }
+.Type { color: #0000ff; }
+.Statement { color: #804040; }
+.Constant { color: #ff00ff; }
+.PreProc { color: #a020f0; }
+.Comment { color: #ff0000; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Comment">/*</span><span class="Comment"> 小的在左，大的在右。 </span><span class="Comment">*/</span>
+<span class="lnr"> 2 </span><span class="PreProc">#include</span><span class="Constant">&quot;stdio.h&quot;</span>
+<span class="lnr"> 3 </span><span class="PreProc">#define NEWS (avltree *)malloc(</span><span class="Statement">sizeof</span><span class="PreProc">(avltree))</span>
+<span class="lnr"> 4 </span><span class="Type">typedef</span> <span class="Type">struct</span> avltree
+<span class="lnr"> 5 </span>{ <span class="Type">struct</span> avltree *rc,*lc;
+<span class="lnr"> 6 </span>  <span class="Type">long</span> height,data,h,gao;
+<span class="lnr"> 7 </span>}avltree;
+<span class="lnr"> 8 </span>  <span class="Type">FILE</span> *input,*output;
+<span class="lnr"> 9 </span><span class="Type">long</span> max(<span class="Type">long</span> a,<span class="Type">long</span> b) { <span class="Statement">if</span>(a&gt;b) <span class="Statement">return</span> a; <span class="Statement">else</span> <span class="Statement">return</span> b;}
+<span class="lnr">10 </span><span class="Type">long</span> min(<span class="Type">long</span> a,<span class="Type">long</span> b) { <span class="Statement">if</span>(a&lt;b) <span class="Statement">return</span> a; <span class="Statement">else</span> <span class="Statement">return</span> b;}
+<span class="lnr">11 </span><span class="Type">long</span> mheight(avltree *t){ <span class="Statement">if</span>(t==<span class="Constant">NULL</span>) <span class="Statement">return</span> <span class="Constant">0</span>; <span class="Statement">else</span> <span class="Statement">return</span> t-&gt;height;  }
+<span class="lnr">12 </span>avltree *singleft(avltree *t)
+<span class="lnr">13 </span>{ avltree *a;
+<span class="lnr">14 </span>  a=t-&gt;lc;
+<span class="lnr">15 </span>  t-&gt;lc=a-&gt;rc;
+<span class="lnr">16 </span>  a-&gt;rc=t;
+<span class="lnr">17 </span>
+<span class="lnr">18 </span>  t-&gt;height=max(mheight(t-&gt;lc),mheight(t-&gt;rc))+<span class="Constant">1</span>;
+<span class="lnr">19 </span>  a-&gt;height=max(mheight(a-&gt;lc),mheight(a-&gt;rc))+<span class="Constant">1</span>;
+<span class="lnr">20 </span>  <span class="Statement">return</span> a;
+<span class="lnr">21 </span>}
+<span class="lnr">22 </span>avltree *singright(avltree *t)
+<span class="lnr">23 </span>{ avltree *p;
+<span class="lnr">24 </span>  p=t-&gt;rc;
+<span class="lnr">25 </span>  t-&gt;rc=p-&gt;lc;
+<span class="lnr">26 </span>  p-&gt;lc=t;
+<span class="lnr">27 </span>
+<span class="lnr">28 </span>  t-&gt;height=max(mheight(t-&gt;lc),mheight(t-&gt;rc))+<span class="Constant">1</span>;
+<span class="lnr">29 </span>  p-&gt;height=max(mheight(p-&gt;lc),mheight(p-&gt;rc))+<span class="Constant">1</span>;
+<span class="lnr">30 </span>  <span class="Statement">return</span> p;
+<span class="lnr">31 </span>}
+<span class="lnr">32 </span>avltree *douleft(avltree *t)
+<span class="lnr">33 </span>{ t-&gt;lc=singright(t-&gt;lc);
+<span class="lnr">34 </span>  t=singleft(t);
+<span class="lnr">35 </span>  <span class="Statement">return</span> t;
+<span class="lnr">36 </span>}
+<span class="lnr">37 </span>avltree *douright(avltree *t)
+<span class="lnr">38 </span>{ t-&gt;rc=singleft(t-&gt;rc);
+<span class="lnr">39 </span>  t=singright(t);
+<span class="lnr">40 </span>  <span class="Statement">return</span> t;
+<span class="lnr">41 </span>}
+<span class="lnr">42 </span>avltree *insert(avltree *t,<span class="Type">long</span> key)
+<span class="lnr">43 </span>{ <span class="Type">long</span> i,j,k,r,w;
+<span class="lnr">44 </span>  avltree *p;
+<span class="lnr">45 </span>  <span class="Statement">if</span>(t==<span class="Constant">NULL</span>)
+<span class="lnr">46 </span>  { p=NEWS;
+<span class="lnr">47 </span>    p-&gt;height=<span class="Constant">1</span>;
+<span class="lnr">48 </span>    p-&gt;data=key;
+<span class="lnr">49 </span>    p-&gt;lc=p-&gt;rc=<span class="Constant">NULL</span>;
+<span class="lnr">50 </span>    <span class="Statement">return</span> p;
+<span class="lnr">51 </span>  }
+<span class="lnr">52 </span>  <span class="Statement">if</span>(key&gt;t-&gt;data)
+<span class="lnr">53 </span>  { t-&gt;rc=insert(t-&gt;rc,key);
+<span class="lnr">54 </span>    <span class="Statement">if</span>(mheight(t-&gt;rc) - mheight(t-&gt;lc) ==<span class="Constant">2</span>)
+<span class="lnr">55 </span>    { <span class="Statement">if</span>(key&gt;t-&gt;rc-&gt;data) t=singright(t);
+<span class="lnr">56 </span>      <span class="Statement">else</span> t=douright(t);
+<span class="lnr">57 </span>    }
+<span class="lnr">58 </span>  }
+<span class="lnr">59 </span>  <span class="Statement">else</span> <span class="Statement">if</span>(key&lt;t-&gt;data)
+<span class="lnr">60 </span>  { t-&gt;lc=insert(t-&gt;lc,key);
+<span class="lnr">61 </span>    <span class="Statement">if</span>(mheight(t-&gt;lc) - mheight(t-&gt;rc) ==<span class="Constant">2</span>)
+<span class="lnr">62 </span>    { <span class="Statement">if</span>(key&lt;t-&gt;lc-&gt;data) t=singleft(t);
+<span class="lnr">63 </span>      <span class="Statement">else</span> t=douleft(t);
+<span class="lnr">64 </span>    }
+<span class="lnr">65 </span>  }
+<span class="lnr">66 </span>  t-&gt;height=max(mheight(t-&gt;lc),mheight(t-&gt;rc))+<span class="Constant">1</span>;
+<span class="lnr">67 </span>  <span class="Statement">return</span> t;
+<span class="lnr">68 </span>}
+<span class="lnr">69 </span>
+<span class="lnr">70 </span><span class="Type">int</span> main()
+<span class="lnr">71 </span>{ <span class="Type">long</span> i,j,k,r,w,n;
+<span class="lnr">72 </span>  avltree *t=<span class="Constant">NULL</span>;
+<span class="lnr">73 </span>  <span class="Type">FILE</span> *input,*output;
+<span class="lnr">74 </span>  input=fopen(<span class="Constant">&quot;avl.in&quot;</span>,<span class="Constant">&quot;r&quot;</span>);
+<span class="lnr">75 </span>  output=fopen(<span class="Constant">&quot;avl.out&quot;</span>,<span class="Constant">&quot;w&quot;</span>);
+<span class="lnr">76 </span>  fscanf(input,<span class="Constant">&quot;</span><span class="Special">%ld</span><span class="Constant">&quot;</span>,&amp;n);
+<span class="lnr">77 </span>  <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++)
+<span class="lnr">78 </span>  { fscanf(input,<span class="Constant">&quot;</span><span class="Special">%ld</span><span class="Constant">&quot;</span>,&amp;r);
+<span class="lnr">79 </span>    t=insert(t,r);
+<span class="lnr">80 </span>  }
+<span class="lnr">81 </span>  fclose(input);
+<span class="lnr">82 </span>  fclose(output);
+<span class="lnr">83 </span>  <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">84 </span>}
+<span class="lnr">85 </span>
+<span class="lnr">86 </span>
+</pre>
+</body>
+</html>

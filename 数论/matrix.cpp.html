@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>D:\code\acm\模板\数论\matrix.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Special { color: #ff00ff; }
+.Statement { color: #804040; }
+.Constant { color: #ff00ff; }
+.Comment { color: #ff0000; }
+.Type { color: #0000ff; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Type">struct</span> matrix {
+<span class="lnr"> 2 </span>    <span class="Type">double</span> ar[maxa][maxa];
+<span class="lnr"> 3 </span>    <span class="Type">int</span> n, m ; <span class="Comment">// n * m; 0 ~ n - 1, 0 ~ m - 1;</span>
+<span class="lnr"> 4 </span>    matrix() {
+<span class="lnr"> 5 </span>        n = <span class="Constant">4</span>; <span class="Comment">//n</span>
+<span class="lnr"> 6 </span>        m = <span class="Constant">4</span>; <span class="Comment">//m</span>
+<span class="lnr"> 7 </span>        memset(ar, <span class="Constant">0</span>, <span class="Statement">sizeof</span>(ar));
+<span class="lnr"> 8 </span>    }
+<span class="lnr"> 9 </span>    <span class="Type">void</span> clear() {
+<span class="lnr">10 </span>        rep (i, n)
+<span class="lnr">11 </span>            rep (j, m)
+<span class="lnr">12 </span>                ar[i][j] = <span class="Constant">0</span>;
+<span class="lnr">13 </span>    }
+<span class="lnr">14 </span>    <span class="Type">void</span> set_one() {
+<span class="lnr">15 </span>        rep (i, n)
+<span class="lnr">16 </span>            rep (j, m)
+<span class="lnr">17 </span>                ar[i][j] = <span class="Constant">0</span>;
+<span class="lnr">18 </span>        rep (i, min(n, m))
+<span class="lnr">19 </span>            ar[i][i] = <span class="Constant">1</span>;
+<span class="lnr">20 </span>    }
+<span class="lnr">21 </span>    <span class="Type">void</span> output() {
+<span class="lnr">22 </span>        printf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant"> </span><span class="Special">%d</span><span class="Special">\n</span><span class="Constant">&quot;</span>, n, m);
+<span class="lnr">23 </span>        rep(i, n) {
+<span class="lnr">24 </span>            rep(j, m)
+<span class="lnr">25 </span>                printf(<span class="Constant">&quot;</span><span class="Special">%.3f</span><span class="Constant"> &quot;</span>, ar[i][j]);
+<span class="lnr">26 </span>            printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+<span class="lnr">27 </span>        }
+<span class="lnr">28 </span>        printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+<span class="lnr">29 </span>    }
+<span class="lnr">30 </span>};
+<span class="lnr">31 </span>matrix <span class="Statement">operator</span> * (<span class="Type">const</span> matrix &amp;a, <span class="Type">const</span> matrix &amp;b) {
+<span class="lnr">32 </span>    matrix c;
+<span class="lnr">33 </span>    <span class="Statement">if</span>(a.m != b.n) printf(<span class="Constant">&quot;a.m != b.n</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+<span class="lnr">34 </span>    c.clear();
+<span class="lnr">35 </span>    c.n = a.n;
+<span class="lnr">36 </span>    c.m = b.m;
+<span class="lnr">37 </span>    rep (i, a.n)
+<span class="lnr">38 </span>        rep (j, b.m)
+<span class="lnr">39 </span>        rep (k, a.m) {
+<span class="lnr">40 </span>            c.ar[i][j] += a.ar[i][k] * b.ar[k][j];   <span class="Comment">//mod</span>
+<span class="lnr">41 </span>        }
+<span class="lnr">42 </span>    <span class="Statement">return</span> c;
+<span class="lnr">43 </span>}
+<span class="lnr">44 </span>
+</pre>
+</body>
+</html>

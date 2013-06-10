@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>D:\code\acm\模板\数论\miller_rabin_and_Pollard_rho.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Special { color: #ff00ff; }
+.Statement { color: #804040; }
+.Type { color: #0000ff; }
+.Constant { color: #ff00ff; }
+.PreProc { color: #a020f0; }
+.Comment { color: #ff0000; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr">  1 </span><span class="Comment">//miller_rabin大数检测+Pollard P素因子分解</span>
+<span class="lnr">  2 </span><span class="Comment">//输入 a&lt;2^63</span>
+<span class="lnr">  3 </span><span class="Comment">//加大MAX 可以保证分解的成功率</span>
+<span class="lnr">  4 </span><span class="PreProc">#include </span><span class="Constant">&lt;stdlib.h&gt;</span>
+<span class="lnr">  5 </span><span class="PreProc">#include </span><span class="Constant">&lt;stdio.h&gt;</span>
+<span class="lnr">  6 </span>
+<span class="lnr">  7 </span><span class="Type">typedef</span> <span class="Type">unsigned</span> __int64 u64;
+<span class="lnr">  8 </span>
+<span class="lnr">  9 </span><span class="PreProc">#define MAX </span><span class="Constant">100</span>
+<span class="lnr"> 10 </span><span class="PreProc">#define MAXN </span><span class="Constant">30</span>
+<span class="lnr"> 11 </span>
+<span class="lnr"> 12 </span>u64 len, dig, limit;
+<span class="lnr"> 13 </span>u64 mod(u64 a, u64 b, u64 n)
+<span class="lnr"> 14 </span>{
+<span class="lnr"> 15 </span>    <span class="Statement">if</span>(!a) <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr"> 16 </span>    <span class="Statement">else</span> <span class="Statement">return</span> (((a &amp; dig) * b) % n + (mod(a &gt;&gt; len, b, n) &lt;&lt; len) % n) % n;
+<span class="lnr"> 17 </span>}
+<span class="lnr"> 18 </span>
+<span class="lnr"> 19 </span>u64 by(u64 a, u64 b, u64 n)
+<span class="lnr"> 20 </span>{
+<span class="lnr"> 21 </span>    u64 p;
+<span class="lnr"> 22 </span>    p = <span class="Constant">8</span>, len = <span class="Constant">61</span>;
+<span class="lnr"> 23 </span>    <span class="Statement">while</span>(p &lt; n)
+<span class="lnr"> 24 </span>    {
+<span class="lnr"> 25 </span>        p &lt;&lt;= <span class="Constant">4</span>;
+<span class="lnr"> 26 </span>        len -= <span class="Constant">4</span>;
+<span class="lnr"> 27 </span>    }
+<span class="lnr"> 28 </span>    dig = ((limit / p) &lt;&lt; <span class="Constant">1</span>) - <span class="Constant">1</span>; <span class="Comment">//动态划分段</span>
+<span class="lnr"> 29 </span>    <span class="Statement">return</span> mod(a, b, n);
+<span class="lnr"> 30 </span>}
+<span class="lnr"> 31 </span>
+<span class="lnr"> 32 </span>u64 random(<span class="Type">void</span>)
+<span class="lnr"> 33 </span>{
+<span class="lnr"> 34 </span>    u64 a;
+<span class="lnr"> 35 </span>    a = rand();
+<span class="lnr"> 36 </span>    a *= rand();
+<span class="lnr"> 37 </span>    a *= rand();
+<span class="lnr"> 38 </span>    a *= rand();
+<span class="lnr"> 39 </span>    <span class="Statement">return</span> a;
+<span class="lnr"> 40 </span>}
+<span class="lnr"> 41 </span>
+<span class="lnr"> 42 </span><span class="Comment">//Miller_Rabin</span>
+<span class="lnr"> 43 </span>u64 square_multiply(u64 x, u64 c, u64 n)
+<span class="lnr"> 44 </span>{
+<span class="lnr"> 45 </span>    u64 z = <span class="Constant">1</span>;
+<span class="lnr"> 46 </span>    <span class="Statement">while</span>(c)
+<span class="lnr"> 47 </span>    {
+<span class="lnr"> 48 </span>        <span class="Statement">if</span>(c % <span class="Constant">2</span> == <span class="Constant">1</span>) z = by(z, x, n);
+<span class="lnr"> 49 </span>        x = by(x,x,n);
+<span class="lnr"> 50 </span>        c = (c &gt;&gt; <span class="Constant">1</span>);
+<span class="lnr"> 51 </span>    }
+<span class="lnr"> 52 </span>    <span class="Statement">return</span> z;
+<span class="lnr"> 53 </span>}
+<span class="lnr"> 54 </span>
+<span class="lnr"> 55 </span><span class="Type">bool</span> Miller_Rabin(u64 n)
+<span class="lnr"> 56 </span>{
+<span class="lnr"> 57 </span>    <span class="Statement">if</span>(n &lt; <span class="Constant">2</span>) <span class="Statement">return</span> <span class="Constant">false</span>;
+<span class="lnr"> 58 </span>    <span class="Statement">if</span>(n == <span class="Constant">2</span>) <span class="Statement">return</span> <span class="Constant">true</span>;
+<span class="lnr"> 59 </span>    <span class="Statement">if</span>(!(n &amp; <span class="Constant">1</span>)) <span class="Statement">return</span> <span class="Constant">false</span>;
+<span class="lnr"> 60 </span>    u64 k = <span class="Constant">0</span>, i, j, m, a;
+<span class="lnr"> 61 </span>    m = n - <span class="Constant">1</span>;
+<span class="lnr"> 62 </span>    <span class="Statement">while</span>(m % <span class="Constant">2</span> == <span class="Constant">0</span>) m = (m &gt;&gt; <span class="Constant">1</span>), k++;
+<span class="lnr"> 63 </span>    <span class="Statement">for</span>(i = <span class="Constant">0</span>; i &lt; MAX; i++)
+<span class="lnr"> 64 </span>    {
+<span class="lnr"> 65 </span>        a = square_multiply(random() % (n - <span class="Constant">1</span>) + <span class="Constant">1</span>, m, n);<span class="Comment">//平方乘</span>
+<span class="lnr"> 66 </span>        <span class="Statement">if</span>(a == <span class="Constant">1</span>) <span class="Statement">continue</span>;
+<span class="lnr"> 67 </span>        <span class="Statement">for</span>(j = <span class="Constant">0</span>; j &lt; k; j++)
+<span class="lnr"> 68 </span>        {
+<span class="lnr"> 69 </span>            <span class="Statement">if</span>(a == n - <span class="Constant">1</span>) <span class="Statement">break</span>;
+<span class="lnr"> 70 </span>            a = by(a, a, n);
+<span class="lnr"> 71 </span>        }
+<span class="lnr"> 72 </span>        <span class="Statement">if</span>(j &lt; k) <span class="Statement">continue</span>;
+<span class="lnr"> 73 </span>        <span class="Statement">return</span> <span class="Constant">false</span> ;
+<span class="lnr"> 74 </span>    }
+<span class="lnr"> 75 </span>    <span class="Statement">return</span> <span class="Constant">true</span>;
+<span class="lnr"> 76 </span>}
+<span class="lnr"> 77 </span>
+<span class="lnr"> 78 </span><span class="Comment">//Pollard p,只找出一个因子。</span>
+<span class="lnr"> 79 </span>u64 gcd(u64 a, u64 b)
+<span class="lnr"> 80 </span>{
+<span class="lnr"> 81 </span>    <span class="Statement">return</span> b == <span class="Constant">0</span> ? a : gcd(b, a % b);
+<span class="lnr"> 82 </span>}
+<span class="lnr"> 83 </span>
+<span class="lnr"> 84 </span><span class="Comment">//用公式f(x) = x^2 + 1检验碰撞。</span>
+<span class="lnr"> 85 </span>u64 f(u64 x, u64 n)
+<span class="lnr"> 86 </span>{
+<span class="lnr"> 87 </span>    <span class="Statement">return</span> (by(x, x, n) + <span class="Constant">1</span>) % n;
+<span class="lnr"> 88 </span>}
+<span class="lnr"> 89 </span>
+<span class="lnr"> 90 </span><span class="Comment">//分解不到，return 0</span>
+<span class="lnr"> 91 </span>u64 Pollard(u64 n)
+<span class="lnr"> 92 </span>{
+<span class="lnr"> 93 </span>    <span class="Statement">if</span>(n &lt;= <span class="Constant">2</span>) <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr"> 94 </span>    <span class="Statement">if</span>(!(n &amp; <span class="Constant">1</span>)) <span class="Statement">return</span> <span class="Constant">2</span>; <span class="Comment">//必不可少</span>
+<span class="lnr"> 95 </span>    u64 i, p, x, xx;
+<span class="lnr"> 96 </span>    <span class="Statement">for</span>(i = <span class="Constant">1</span>; i &lt; MAX; i++)
+<span class="lnr"> 97 </span>    {
+<span class="lnr"> 98 </span>        x = random() % n; <span class="Comment">//或者直接用 x = i</span>
+<span class="lnr"> 99 </span>        xx = f(x, n);
+<span class="lnr">100 </span>        p = gcd((xx + n - x) % n , n);
+<span class="lnr">101 </span>        <span class="Statement">while</span>(p == <span class="Constant">1</span>)
+<span class="lnr">102 </span>        {
+<span class="lnr">103 </span>            x = f(x, n);
+<span class="lnr">104 </span>            xx = f(f(xx, n), n);
+<span class="lnr">105 </span>            p = gcd((xx + n - x) % n, n) % n;
+<span class="lnr">106 </span>        }
+<span class="lnr">107 </span>        <span class="Statement">if</span>(p)<span class="Statement">return</span> p;
+<span class="lnr">108 </span>    }
+<span class="lnr">109 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">110 </span>}
+<span class="lnr">111 </span>
+<span class="lnr">112 </span><span class="Comment">/////////////////////////////////////////////////////////</span>
+<span class="lnr">113 </span>u64 factor[MAXN], m;
+<span class="lnr">114 </span><span class="Comment">/////////////////////////////////////////////////////</span>
+<span class="lnr">115 </span><span class="Comment">//分解质数因子</span>
+<span class="lnr">116 </span>u64 prime(u64 a)
+<span class="lnr">117 </span>{
+<span class="lnr">118 </span>    <span class="Statement">if</span>(Miller_Rabin(a)) <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">119 </span>    u64 t = Pollard(a), p;
+<span class="lnr">120 </span>    <span class="Statement">if</span>(p = prime(t)) <span class="Statement">return</span> p;
+<span class="lnr">121 </span>    <span class="Statement">else</span> <span class="Statement">return</span> t;
+<span class="lnr">122 </span>}
+<span class="lnr">123 </span>
+<span class="lnr">124 </span><span class="Type">int</span> main(<span class="Type">void</span>)
+<span class="lnr">125 </span>{
+<span class="lnr">126 </span>    u64 l, a, t;
+<span class="lnr">127 </span>    limit = <span class="Constant">1</span>;
+<span class="lnr">128 </span>    limit = limit &lt;&lt; <span class="Constant">63</span>; <span class="Comment">//动态化分段使用</span>
+<span class="lnr">129 </span>    <span class="Statement">while</span>(scanf(<span class="Constant">&quot;%I64u&quot;</span>, &amp;a) != <span class="Constant">EOF</span>)
+<span class="lnr">130 </span>    {
+<span class="lnr">131 </span>        m = <span class="Constant">0</span>;
+<span class="lnr">132 </span>        <span class="Statement">while</span>(a &gt; <span class="Constant">1</span>)
+<span class="lnr">133 </span>        {
+<span class="lnr">134 </span>            <span class="Statement">if</span>(Miller_Rabin(a)) <span class="Statement">break</span>;
+<span class="lnr">135 </span>            t = prime(a);
+<span class="lnr">136 </span>            factor[m++] = t;
+<span class="lnr">137 </span>            a /= t;
+<span class="lnr">138 </span>        }
+<span class="lnr">139 </span>        <span class="Statement">if</span>(a &gt; <span class="Constant">0</span>) factor[m++] = a;
+<span class="lnr">140 </span>        <span class="Statement">for</span>(l = <span class="Constant">0</span>; l &lt; m; l++)
+<span class="lnr">141 </span>            printf(<span class="Constant">&quot;%I64u</span><span class="Special">\n</span><span class="Constant">&quot;</span>, factor[l]);
+<span class="lnr">142 </span>    }
+<span class="lnr">143 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">144 </span>}
+</pre>
+</body>
+</html>

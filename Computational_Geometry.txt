@@ -1,0 +1,127 @@
+典型的Point结构体
+
+struct point {
+    double x, y;
+    point(double _x = 0, double _y = 0): x(_x), y(_y) {
+    }
+    void input() {
+        scanf("%lf%lf", &x, &y);
+    }
+    double len() const {
+        return sqrt(x * x + y * y);
+    }
+    point trunc(double l) const {
+        double r = l / len();
+        return point(x * r, y * r);
+    }
+    point rotate_left() const {
+        return point(-y, x);
+    }
+    point rotate_left(double ang) const {
+        double c = cos(ang), s = sin(ang);
+        return point(x * c - y * s, y * c + x * s);
+    }
+    point rotate_right() const {
+        return point(y, -x);
+    }
+    point rotate_right(double ang) const {
+        double c = cos(ang), s = sin(ang);
+        return point(x * c + y * s, y * c - x * s);
+    }
+};
+
+bool operator==(const point& p1, const point& p2) {
+    return sgn(p1.x - p2.x) == 0 && sgn(p1.y - p2.y) == 0;
+}
+
+bool operator<(const point& p1, const point& p2) {
+    return sgn(p1.x - p2.x) == 0 ? sgn(p1.y - p2.y) < 0 : p1.x < p2.x;
+}
+
+point operator+(const point& p1, const point& p2) {
+    return point(p1.x + p2.x, p1.y + p2.y);
+}
+
+point operator-(const point& p1, const point& p2) {
+    return point(p1.x - p2.x, p1.y - p2.y);
+}
+
+double operator^(const point& p1, const point& p2) {
+    return p1.x * p2.x + p1.y * p2.y;
+}
+
+double operator*(const point& p1, const point& p2) {
+    return p1.x * p2.y - p1.y * p2.x;
+}
+
+转角法判断点是否在简单多边形的内部
+
+int get_position(const point& p, const point* pol, int n) {
+    double ang = 0;
+    for (int i = 0; i < n; ++i) {
+        point p1 = pol[i] - p, p2 = pol[(i + 1) % n] - p;
+        double c = (p1 ^ p2) / (p1.len() * p2.len());
+        to_normal(c);
+        ang += sgn(p1 * p2) * acos(c);
+    }
+    ang = abs(ang);
+    return ang < 0.5 * pi ? -1 : (ang < 1.5 * pi ? 0 : 1);
+}
+
+圆与圆的切线
+
+struct circle {
+    ...
+    vector<pair<point, point> > get_tangency_points(const circle& cir) const {
+        vector<pair<point, point> > t;
+        double d = (c - cir.c).len();
+        if (sgn(d - abs(cir.r - r)) <= 0)
+            return t;
+        double l = sqrt(abs(d * d - (cir.r - r) * (cir.r - r)));
+        double h1 = r * l / d, h2 = cir.r * l / d;
+        point p = (r > cir.r ? cir.c - c : c - cir.c);
+        point pp1 = c + p.trunc(sqrt(abs(r * r - h1 * h1))), pp2 = cir.c + p.trunc(sqrt(abs(cir.r * cir.r - h2 * h2)));
+        t.push_back(make_pair(pp1 + p.rotate_left().trunc(h1), pp2 + p.rotate_left().trunc(h2)));
+        t.push_back(make_pair(pp1 - p.rotate_left().trunc(h1), pp2 - p.rotate_left().trunc(h2)));
+        if (sgn(d - (r + cir.r)) <= 0)
+            return t;
+        double d1 = d * r / (r + cir.r), d2 = d * cir.r / (r + cir.r);
+        point pp3 = c + (cir.c - c).trunc(r * r / d1), pp4 = cir.c + (c - cir.c).trunc(cir.r * cir.r / d2);
+        double h3 = sqrt(abs(r * r - (r * r * r * r) / (d1 * d1))), h4 = sqrt(abs(cir.r * cir.r - (cir.r * cir.r * cir.r * cir.r) / (d2 * d2)));
+        t.push_back(make_pair(pp3 + (cir.c - c).rotate_left().trunc(h3), pp4 + (c - cir.c).rotate_left().trunc(h4)));
+        t.push_back(make_pair(pp3 - (cir.c - c).rotate_left().trunc(h3), pp4 - (c - cir.c).rotate_left().trunc(h4)));
+        return t;
+    }
+};
+
+凸包
+
+int dn, hd[max_n], un, hu[max_n];
+
+void get_convex_hull(point* p, int n, point* pol, int& m) {
+    sort(p, p + n);
+    dn = un = 2;
+    hd[0] = hu[0] = 0;
+    hd[1] = hu[1] = 1;
+    for (int i = 2; i < n; ++i) {
+        for (; dn > 1 && sgn((p[hd[dn - 1]] - p[hd[dn - 2]]) * (p[i] - p[hd[dn - 1]])) <= 0; --dn);
+        for (; un > 1 && sgn((p[hu[un - 1]] - p[hu[un - 2]]) * (p[i] - p[hu[un - 1]])) >= 0; --un);
+        hd[dn++] = hu[un++] = i;
+    }
+    m = 0;
+    for (int i = 0; i < dn - 1; ++i)
+        pol[m++] = p[hd[i]];
+    for (int i = un - 1; i > 0; --i)
+        pol[m++] = p[hu[i]];
+}
+
+三维几何中点到直线、平面的距离
+
+double get_distance(const point& p, const point& p1, const point& p2) {
+    return abs(((p1 - p) * (p2 - p)).len() / (p1 - p2).len());
+}
+
+double get_distance(const point& p, const point& p1, const point& p2, const point& p3) {
+    point v = (p2 - p1) * (p3 - p1);
+    return abs((v ^ (p - p1)) / v.len());
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>D:\code\acm\m模板\java\分数操作.java.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="java">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Comment { color: #ee0000; }
+.Statement { color: #0000ff; font-weight: bold; }
+.Constant { color: #00cd00; }
+.Type { color: #0000ff; font-weight: bold; }
+.PreProc { color: #cd00cd; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="PreProc">import</span> java.io.*;
+<span class="lnr"> 2 </span><span class="PreProc">import</span> java.math.*;
+<span class="lnr"> 3 </span><span class="PreProc">import</span> java.util.*;
+<span class="lnr"> 4 </span>
+<span class="lnr"> 5 </span><span class="Type">public</span> <span class="Type">class</span> Main {
+<span class="lnr"> 6 </span>    <span class="Type">public</span> <span class="Type">final</span> <span class="Type">static</span> <span class="Type">int</span> maxn = <span class="Constant">50</span> + <span class="Constant">10</span>;
+<span class="lnr"> 7 </span>    <span class="Type">public</span> <span class="Type">final</span> <span class="Type">static</span> <span class="Type">int</span> lim_m = <span class="Constant">50</span>;
+<span class="lnr"> 8 </span>    <span class="Type">public</span> <span class="Type">final</span> <span class="Type">static</span> BigInteger ZERO = <span class="Statement">new</span> BigInteger(<span class="Constant">&quot;0&quot;</span>);
+<span class="lnr"> 9 </span>    <span class="Type">public</span> <span class="Type">final</span> <span class="Type">static</span> BigInteger ONE = <span class="Statement">new</span> BigInteger(<span class="Constant">&quot;1&quot;</span>);
+<span class="lnr">10 </span>
+<span class="lnr">11 </span>    <span class="Type">public</span> <span class="Type">static</span> <span class="Type">void</span> updata(<span class="Type">int</span> i, <span class="Type">int</span> j, <span class="Type">int</span> r, <span class="Type">int</span> w, BigInteger[][] mu, BigInteger[][] zi, BigInteger scope) {
+<span class="lnr">12 </span>        BigInteger nmu = mu[r][w].multiply(scope);
+<span class="lnr">13 </span>        BigInteger new_mu = mu[i][j].multiply(nmu);
+<span class="lnr">14 </span>        BigInteger new_zi = mu[i][j].multiply(zi[r][w]);
+<span class="lnr">15 </span>        new_zi = new_zi.add( nmu.multiply(zi[i][j]) );
+<span class="lnr">16 </span>
+<span class="lnr">17 </span>        <span class="Comment">//BigInteger h = new_mu.gcd(new_zi);</span>
+<span class="lnr">18 </span>        mu[i][j] = new_mu;
+<span class="lnr">19 </span>        zi[i][j] = new_zi.divide(h);
+<span class="lnr">20 </span>    }
+<span class="lnr">21 </span>
+<span class="lnr">22 </span>    <span class="Type">public</span> <span class="Type">static</span> <span class="Type">void</span> main(String[] args) {
+<span class="lnr">23 </span>        BigInteger[][] mu = <span class="Statement">new</span> BigInteger[maxn][maxn], zi = <span class="Statement">new</span> BigInteger[maxn][maxn];
+<span class="lnr">24 </span>        BigInteger scope = ZERO;
+<span class="lnr">25 </span>        <span class="Type">int</span>[] x = <span class="Statement">new</span> <span class="Type">int</span>[maxn];
+<span class="lnr">26 </span>        <span class="Type">int</span> n, m, a, b;
+<span class="lnr">27 </span>        Scanner cin = <span class="Statement">new</span> Scanner(System.in);
+<span class="lnr">28 </span>        <span class="Statement">while</span> (cin.hasNextInt()) {
+<span class="lnr">29 </span>            n = cin.nextInt();
+<span class="lnr">30 </span>            m = cin.nextInt();
+<span class="lnr">31 </span>            a = cin.nextInt();
+<span class="lnr">32 </span>            b = cin.nextInt();
+<span class="lnr">33 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">0</span>; i &lt; n; i++)
+<span class="lnr">34 </span>                x[i] = cin.nextInt();
+<span class="lnr">35 </span>
+<span class="lnr">36 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">0</span>; i &lt;= n + <span class="Constant">1</span>; i++)
+<span class="lnr">37 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = <span class="Constant">0</span>; j &lt;= lim_m; j++)
+<span class="lnr">38 </span>                    mu[i][j] = ONE;
+<span class="lnr">39 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">0</span>; i &lt;= n + <span class="Constant">1</span>; i++)
+<span class="lnr">40 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = <span class="Constant">0</span>; j &lt;= lim_m; j++)
+<span class="lnr">41 </span>                    zi[i][j] = ZERO;
+<span class="lnr">42 </span>            zi[<span class="Constant">0</span>][<span class="Constant">0</span>] = ONE;
+<span class="lnr">43 </span>            scope = scope.valueOf(b - a + <span class="Constant">1</span>);
+<span class="lnr">44 </span>
+<span class="lnr">45 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">0</span>; i &lt; n; i++) {
+<span class="lnr">46 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = a; j &lt;= b; j++) {
+<span class="lnr">47 </span>                    <span class="Type">int</span> dis = Math.abs(x[i] - j);
+<span class="lnr">48 </span>                    <span class="Statement">for</span> (<span class="Type">int</span> k = <span class="Constant">0</span>; k &lt;= lim_m; k++)
+<span class="lnr">49 </span>                        <span class="Statement">if</span> (k - dis &gt;= <span class="Constant">0</span>) {
+<span class="lnr">50 </span>                            updata(i + <span class="Constant">1</span>, k, i, k - dis, mu, zi, scope);
+<span class="lnr">51 </span>                        }
+<span class="lnr">52 </span>                }
+<span class="lnr">53 </span>            }
+<span class="lnr">54 </span>
+<span class="lnr">55 </span>            BigInteger ans_mu = ONE, ans_zi = ZERO;
+<span class="lnr">56 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">0</span>; i &lt;= m; i++) {
+<span class="lnr">57 </span>                ans_zi = ans_zi.multiply(mu[n][i]);
+<span class="lnr">58 </span>                ans_zi = ans_zi.add(zi[n][i].multiply(ans_mu));
+<span class="lnr">59 </span>                ans_mu = ans_mu.multiply(mu[n][i]);
+<span class="lnr">60 </span>                BigInteger h = ans_zi.gcd(ans_mu);
+<span class="lnr">61 </span>                ans_zi = ans_zi.divide(h);
+<span class="lnr">62 </span>                ans_mu = ans_mu.divide(h);
+<span class="lnr">63 </span>            }
+<span class="lnr">64 </span>
+<span class="lnr">65 </span>            System.out.println(ans_zi + <span class="Constant">&quot;/&quot;</span> + ans_mu);
+<span class="lnr">66 </span>        }
+<span class="lnr">67 </span>    }
+<span class="lnr">68 </span>}
+</pre>
+</body>
+</html>

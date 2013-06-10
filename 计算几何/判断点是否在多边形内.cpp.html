@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>D:\code\acm\m模板\计算几何\判断点是否在多边形内.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Statement { color: #804040; font-weight: bold; }
+.Constant { color: #ff00ff; }
+.Type { color: #2e8b57; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Type">int</span> get_position(<span class="Type">const</span> point&amp; p, <span class="Type">const</span> point* pol, <span class="Type">int</span> n) {
+<span class="lnr"> 2 </span>    <span class="Type">double</span> ang = <span class="Constant">0</span>;
+<span class="lnr"> 3 </span>    <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">0</span>; i &lt; n; ++i) {
+<span class="lnr"> 4 </span>        point p1 = pol[i] - p, p2 = pol[(i + <span class="Constant">1</span>) % n] - p;
+<span class="lnr"> 5 </span>        <span class="Type">double</span> c = (p1 ^ p2) / (p1.len() * p2.len());
+<span class="lnr"> 6 </span>        to_normal(c);
+<span class="lnr"> 7 </span>        ang += sgn(p1 * p2) * acos(c);
+<span class="lnr"> 8 </span>    }
+<span class="lnr"> 9 </span>    ang = abs(ang);
+<span class="lnr">10 </span>    <span class="Statement">return</span> ang &lt; <span class="Constant">0.5</span> * pi ? -<span class="Constant">1</span> : (ang &lt; <span class="Constant">1.5</span> * pi ? <span class="Constant">0</span> : <span class="Constant">1</span>);
+<span class="lnr">11 </span>}
+</pre>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>D:\code\acm\模板\搜索\suduke.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Special { color: #ff00ff; }
+.Comment { color: #ff0000; }
+.Statement { color: #804040; }
+.Constant { color: #ff00ff; }
+.Type { color: #0000ff; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr">  1 </span><span class="Type">const</span> <span class="Type">int</span> maxn = <span class="Constant">9</span> + <span class="Constant">10</span>;
+<span class="lnr">  2 </span><span class="Type">int</span> n = <span class="Constant">9</span>, m = <span class="Constant">9</span>, tn = <span class="Constant">9</span>;
+<span class="lnr">  3 </span><span class="Type">class</span> Graph {
+<span class="lnr">  4 </span>    <span class="Statement">public</span>:
+<span class="lnr">  5 </span>        <span class="Type">static</span> <span class="Type">const</span> <span class="Type">int</span> maxn = <span class="Constant">9</span> * <span class="Constant">9</span> * <span class="Constant">9</span> + <span class="Constant">7</span>;
+<span class="lnr">  6 </span>        <span class="Type">static</span> <span class="Type">const</span> <span class="Type">int</span> maxm = <span class="Constant">1000</span> + <span class="Constant">7</span>;
+<span class="lnr">  7 </span>        <span class="Type">static</span> <span class="Type">const</span> <span class="Type">int</span> Max = maxn * maxm + <span class="Constant">10</span>;
+<span class="lnr">  8 </span>        <span class="Type">static</span> <span class="Type">const</span> <span class="Type">int</span> sn = <span class="Constant">9</span>, sm = <span class="Constant">9</span>, stn = <span class="Constant">9</span>;
+<span class="lnr">  9 </span>        <span class="Type">int</span> adj[maxn][maxm], O[maxn]; <span class="Comment">//O[] is answer</span>
+<span class="lnr"> 10 </span>        <span class="Type">int</span> ans, sudoku[<span class="Constant">20</span>][<span class="Constant">20</span>];
+<span class="lnr"> 11 </span>
+<span class="lnr"> 12 </span>        <span class="Type">void</span> init() {
+<span class="lnr"> 13 </span>            n = m = <span class="Constant">0</span>;
+<span class="lnr"> 14 </span>            memset(adj, <span class="Constant">0</span>, <span class="Statement">sizeof</span>(adj));
+<span class="lnr"> 15 </span>        }
+<span class="lnr"> 16 </span>        <span class="Type">void</span> insert(<span class="Type">int</span> u, <span class="Type">int</span> v) {
+<span class="lnr"> 17 </span>            u++, v++;
+<span class="lnr"> 18 </span>            n = max(n, u);
+<span class="lnr"> 19 </span>            m = max(m, v);
+<span class="lnr"> 20 </span>            adj[u][v] = <span class="Constant">1</span>;
+<span class="lnr"> 21 </span>        }
+<span class="lnr"> 22 </span>        <span class="Type">int</span> find_ans() {
+<span class="lnr"> 23 </span>            build_dlx();
+<span class="lnr"> 24 </span>            ans = -<span class="Constant">1</span>;
+<span class="lnr"> 25 </span>            <span class="Statement">if</span> (dfs(<span class="Constant">0</span>) ) {
+<span class="lnr"> 26 </span>                <span class="Statement">return</span> ans;
+<span class="lnr"> 27 </span>            }
+<span class="lnr"> 28 </span>            <span class="Statement">return</span> -<span class="Constant">1</span>;
+<span class="lnr"> 29 </span>        }
+<span class="lnr"> 30 </span>        <span class="Type">void</span> out_ans(<span class="Type">int</span> ans) {
+<span class="lnr"> 31 </span>            <span class="Statement">if</span>(ans == -<span class="Constant">1</span>) {
+<span class="lnr"> 32 </span>                printf(<span class="Constant">&quot;NO</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+<span class="lnr"> 33 </span>                <span class="Statement">return</span> ;
+<span class="lnr"> 34 </span>            }
+<span class="lnr"> 35 </span>            <span class="Comment">//printf(&quot;%d&quot;, n);</span>
+<span class="lnr"> 36 </span>            repf (i, <span class="Constant">0</span>, ans - <span class="Constant">1</span>) {
+<span class="lnr"> 37 </span>                <span class="Type">int</span> x, y, ty;
+<span class="lnr"> 38 </span>                O[i]--;
+<span class="lnr"> 39 </span>                x = O[i] / (sm * stn);
+<span class="lnr"> 40 </span>                y = (O[i] % (sm * stn) ) / stn;
+<span class="lnr"> 41 </span>                ty = (O[i] % (stn));
+<span class="lnr"> 42 </span>                <span class="Comment">//printf(&quot;%d %d %d\n&quot;, x, y, ty);</span>
+<span class="lnr"> 43 </span>                sudoku[x][y] = ty + <span class="Constant">1</span>;
+<span class="lnr"> 44 </span>            }
+<span class="lnr"> 45 </span>            rep (i, sn)
+<span class="lnr"> 46 </span>                rep (j, sm)
+<span class="lnr"> 47 </span>                    printf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant">&quot;</span>,sudoku[i][j]);
+<span class="lnr"> 48 </span>            printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+<span class="lnr"> 49 </span>        }
+<span class="lnr"> 50 </span>    <span class="Statement">private</span>:
+<span class="lnr"> 51 </span>        <span class="Type">int</span> head;
+<span class="lnr"> 52 </span>        <span class="Type">int</span> R[Max], L[Max], U[Max], D[Max], C[Max], H[Max];
+<span class="lnr"> 53 </span>        <span class="Type">int</span> S[maxn];
+<span class="lnr"> 54 </span>        <span class="Type">int</span> n, m, cnt, nm;
+<span class="lnr"> 55 </span>
+<span class="lnr"> 56 </span>        <span class="Type">void</span> add(<span class="Type">int</span> head, <span class="Type">int</span> tmp, <span class="Type">int</span> x) {
+<span class="lnr"> 57 </span>            H[cnt] = head;
+<span class="lnr"> 58 </span>            R[cnt] = tmp; L[cnt] = L[tmp];
+<span class="lnr"> 59 </span>            L[tmp] = cnt; R[L[cnt]] = cnt;
+<span class="lnr"> 60 </span>            U[cnt] = U[x]; D[cnt] = x;
+<span class="lnr"> 61 </span>            D[U[x]] = cnt; U[x] = cnt;
+<span class="lnr"> 62 </span>            C[cnt] = x; ++S[x];
+<span class="lnr"> 63 </span>            ++cnt;
+<span class="lnr"> 64 </span>        }
+<span class="lnr"> 65 </span>        <span class="Type">void</span> build_dlx() {
+<span class="lnr"> 66 </span>            L[<span class="Constant">0</span>] = R[<span class="Constant">0</span>] = U[<span class="Constant">0</span>] = D[<span class="Constant">0</span>] = C[<span class="Constant">0</span>] = H[<span class="Constant">0</span>] = <span class="Constant">0</span>;
+<span class="lnr"> 67 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">1</span>; i &lt;= m; i++) {
+<span class="lnr"> 68 </span>                H[i] = <span class="Constant">0</span>;
+<span class="lnr"> 69 </span>                L[i] = i - <span class="Constant">1</span>; R[i] = <span class="Constant">0</span>;
+<span class="lnr"> 70 </span>                R[i - <span class="Constant">1</span>] = i; L[<span class="Constant">0</span>] = i;
+<span class="lnr"> 71 </span>                U[i] = D[i] = C[i] = i;
+<span class="lnr"> 72 </span>                S[i] = <span class="Constant">0</span>;
+<span class="lnr"> 73 </span>            }
+<span class="lnr"> 74 </span>            cnt = m + <span class="Constant">1</span>;
+<span class="lnr"> 75 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">1</span>; i &lt;= n; i++) {
+<span class="lnr"> 76 </span>                <span class="Type">int</span> tmp = Max - <span class="Constant">1</span>;
+<span class="lnr"> 77 </span>                L[tmp] = R[tmp] = U[tmp] = D[tmp] = C[tmp] = tmp;
+<span class="lnr"> 78 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = <span class="Constant">1</span>; j &lt;= m; j++)
+<span class="lnr"> 79 </span>                    <span class="Statement">if</span>(adj[i][j])   {
+<span class="lnr"> 80 </span>                        add(i, tmp, j);
+<span class="lnr"> 81 </span>                    }
+<span class="lnr"> 82 </span>                L[R[tmp]] = L[tmp];
+<span class="lnr"> 83 </span>                R[L[tmp]] = R[tmp];
+<span class="lnr"> 84 </span>            }
+<span class="lnr"> 85 </span>        }
+<span class="lnr"> 86 </span>        <span class="Type">void</span> remove(<span class="Type">const</span> <span class="Type">int</span> &amp;c) {
+<span class="lnr"> 87 </span>            R[L[c]] = R[c];
+<span class="lnr"> 88 </span>            L[R[c]] = L[c];
+<span class="lnr"> 89 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = D[c]; i != c; i = D[i]) {
+<span class="lnr"> 90 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = R[i]; j != i; j = R[j]) {
+<span class="lnr"> 91 </span>                    U[D[j]] = U[j];
+<span class="lnr"> 92 </span>                    D[U[j]] = D[j];
+<span class="lnr"> 93 </span>                    --S[C[j]];
+<span class="lnr"> 94 </span>                }
+<span class="lnr"> 95 </span>            }
+<span class="lnr"> 96 </span>        }
+<span class="lnr"> 97 </span>
+<span class="lnr"> 98 </span>        <span class="Type">void</span> resume(<span class="Type">const</span> <span class="Type">int</span> &amp;c) {
+<span class="lnr"> 99 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = D[c]; i != c; i = D[i]) {
+<span class="lnr">100 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = R[i]; j != i; j = R[j]) {
+<span class="lnr">101 </span>                    U[D[j]] = j;
+<span class="lnr">102 </span>                    D[U[j]] = j;
+<span class="lnr">103 </span>                    ++S[C[j]];
+<span class="lnr">104 </span>                }
+<span class="lnr">105 </span>            }
+<span class="lnr">106 </span>            R[L[c]] = c;
+<span class="lnr">107 </span>            L[R[c]] = c;
+<span class="lnr">108 </span>        }
+<span class="lnr">109 </span>
+<span class="lnr">110 </span>        <span class="Type">bool</span> dfs(<span class="Type">const</span> <span class="Type">int</span> &amp;k) {
+<span class="lnr">111 </span>            <span class="Statement">if</span> (R[<span class="Constant">0</span>] == <span class="Constant">0</span>){
+<span class="lnr">112 </span>                ans = k;
+<span class="lnr">113 </span>                <span class="Statement">return</span> <span class="Constant">true</span>;
+<span class="lnr">114 </span>            }
+<span class="lnr">115 </span>            <span class="Type">int</span> s(maxint), c;
+<span class="lnr">116 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = R[<span class="Constant">0</span>]; i != <span class="Constant">0</span>; i = R[i]) {
+<span class="lnr">117 </span>                <span class="Statement">if</span> (S[i] &lt; s) {
+<span class="lnr">118 </span>                    c = i;
+<span class="lnr">119 </span>                    s = S[i];
+<span class="lnr">120 </span>                }
+<span class="lnr">121 </span>            }
+<span class="lnr">122 </span>            remove(c);
+<span class="lnr">123 </span>            <span class="Statement">for</span> (<span class="Type">int</span> i = D[c]; i != c; i = D[i]) {
+<span class="lnr">124 </span>                O[k] = H[i]; <span class="Comment">//</span>
+<span class="lnr">125 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = R[i]; j != i; j = R[j]) remove(C[j]);
+<span class="lnr">126 </span>                <span class="Statement">if</span> (dfs(k + <span class="Constant">1</span>)) <span class="Statement">return</span> <span class="Constant">true</span>;
+<span class="lnr">127 </span>                <span class="Statement">for</span> (<span class="Type">int</span> j = L[i]; j != i; j = L[j]) resume(C[j]);
+<span class="lnr">128 </span>            }
+<span class="lnr">129 </span>            resume(c);
+<span class="lnr">130 </span>            <span class="Statement">return</span> <span class="Constant">false</span>;
+<span class="lnr">131 </span>        }
+<span class="lnr">132 </span>}G;
+<span class="lnr">133 </span><span class="Type">char</span> in[maxn * maxn];
+<span class="lnr">134 </span><span class="Type">int</span> a[maxn][maxn];
+<span class="lnr">135 </span>
+<span class="lnr">136 </span><span class="Type">void</span> add(<span class="Type">int</span> x, <span class="Type">int</span> y, <span class="Type">int</span> ty) {
+<span class="lnr">137 </span>    <span class="Type">int</span> l_id = x * m * tn + y * tn + ty;
+<span class="lnr">138 </span>    <span class="Comment">//printf(&quot;%d %d %d %d\n&quot;, x, y, ty, l_id);</span>
+<span class="lnr">139 </span>    <span class="Type">int</span> bn =  ((x / <span class="Constant">3</span>) * <span class="Constant">3</span> + y / <span class="Constant">3</span>);
+<span class="lnr">140 </span>    G.insert(l_id, x * m + y);
+<span class="lnr">141 </span>    G.insert(l_id, x * tn + ty + n * m);         <span class="Comment">//row</span>
+<span class="lnr">142 </span>    G.insert(l_id, n * tn + y * tn + ty + n * m);   <span class="Comment">//vertical</span>
+<span class="lnr">143 </span>    G.insert(l_id, n * tn + m * tn + bn * tn + ty + n * m);  <span class="Comment">//block</span>
+<span class="lnr">144 </span>}
+<span class="lnr">145 </span><span class="Type">int</span> main(){
+<span class="lnr">146 </span>    <span class="Statement">while</span> (scanf(<span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, in) == <span class="Constant">1</span>) {
+<span class="lnr">147 </span>        <span class="Statement">if</span> (in[<span class="Constant">0</span>] == <span class="Constant">'e'</span>)    <span class="Statement">break</span>;
+<span class="lnr">148 </span>        rep (i, n)
+<span class="lnr">149 </span>            rep (j, m)
+<span class="lnr">150 </span>                <span class="Statement">if</span> (in[i * m + j] == <span class="Constant">'.'</span>)   a[i][j] = <span class="Constant">0</span>;
+<span class="lnr">151 </span>                <span class="Statement">else</span>  a[i][j] = in[i * m + j] - <span class="Constant">'0'</span>;
+<span class="lnr">152 </span>
+<span class="lnr">153 </span>        G.init();
+<span class="lnr">154 </span>        rep (i, n)
+<span class="lnr">155 </span>            rep (j, m) {
+<span class="lnr">156 </span>                <span class="Statement">if</span>(a[i][j] == <span class="Constant">0</span>) {
+<span class="lnr">157 </span>                    repf (k, <span class="Constant">1</span>, <span class="Constant">9</span>)
+<span class="lnr">158 </span>                        add(i, j, k - <span class="Constant">1</span>);
+<span class="lnr">159 </span>                }
+<span class="lnr">160 </span>                <span class="Statement">else</span> add(i, j, a[i][j] - <span class="Constant">1</span>);
+<span class="lnr">161 </span>            }
+<span class="lnr">162 </span>        <span class="Type">int</span> ans = G.find_ans();
+<span class="lnr">163 </span>        G.out_ans(ans);
+<span class="lnr">164 </span>    }
+<span class="lnr">165 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">166 </span>}
+<span class="lnr">167 </span>
+</pre>
+</body>
+</html>

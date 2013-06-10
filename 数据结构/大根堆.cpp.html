@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>D:\code\acm\模板\数据结构\大根堆.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Statement { color: #804040; }
+.Comment { color: #ff0000; }
+.Constant { color: #ff00ff; }
+.Type { color: #0000ff; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Type">long</span> dn=<span class="Constant">0</span>;           <span class="Comment">/*</span><span class="Comment">大根堆</span><span class="Comment">*/</span>
+<span class="lnr"> 2 </span><span class="Type">void</span> jia(<span class="Type">long</span> key)
+<span class="lnr"> 3 </span>{ <span class="Type">long</span> i,j,k,m;
+<span class="lnr"> 4 </span>  a[++dn]=key;
+<span class="lnr"> 5 </span>  i=dn/<span class="Constant">2</span>; j=dn;
+<span class="lnr"> 6 </span>  <span class="Statement">while</span>(i&gt;=<span class="Constant">1</span>)
+<span class="lnr"> 7 </span>  { <span class="Statement">if</span>(a[j]&gt;a[i]) swap(&amp;a[j],&amp;a[i]);
+<span class="lnr"> 8 </span>    <span class="Statement">else</span> <span class="Statement">break</span>;
+<span class="lnr"> 9 </span>    j=i; i/=<span class="Constant">2</span>;
+<span class="lnr">10 </span>  }
+<span class="lnr">11 </span>}
+<span class="lnr">12 </span><span class="Type">void</span> del()
+<span class="lnr">13 </span>{ <span class="Type">long</span> i,j,k,m;
+<span class="lnr">14 </span>  swap(&amp;a[<span class="Constant">1</span>],&amp;a[dn]);
+<span class="lnr">15 </span>  dn--;
+<span class="lnr">16 </span>  i=<span class="Constant">1</span>;
+<span class="lnr">17 </span>  <span class="Statement">while</span>(i&lt;=dn/<span class="Constant">2</span>)
+<span class="lnr">18 </span>  { j=i*<span class="Constant">2</span>;
+<span class="lnr">19 </span>    <span class="Statement">if</span>(j+<span class="Constant">1</span>&lt;=dn&amp;&amp;a[j]&lt;a[j+<span class="Constant">1</span>]) j++;
+<span class="lnr">20 </span>    <span class="Statement">if</span>(a[i]&lt;a[j]) swap(&amp;a[i],&amp;a[j]);
+<span class="lnr">21 </span>    <span class="Statement">else</span> <span class="Statement">break</span>;
+<span class="lnr">22 </span>    i=j;
+<span class="lnr">23 </span>  }
+<span class="lnr">24 </span>}
+<span class="lnr">25 </span>
+</pre>
+</body>
+</html>
