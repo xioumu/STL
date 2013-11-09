@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>E:\Dropbox\acm2013\m模板\test\2hdu3662.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Special { color: #6a5acd; }
+.Type { color: #2e8b57; font-weight: bold; }
+.Statement { color: #804040; font-weight: bold; }
+.Constant { color: #ff00ff; }
+.PreProc { color: #a020f0; }
+.Comment { color: #0000ff; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr">  1 </span><span class="Comment">/*</span><span class="Comment">==================================================*  </span>
+<span class="lnr">  2 </span><span class="Comment">| 3D凸包    </span>
+<span class="lnr">  3 </span><span class="Comment">| CALL: 构建凸包 = construct();     </span>
+<span class="lnr">  4 </span><span class="Comment">\*==================================================</span><span class="Comment">*/</span>
+<span class="lnr">  5 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstdio&gt;</span>
+<span class="lnr">  6 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstring&gt;</span>
+<span class="lnr">  7 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstdlib&gt;</span>
+<span class="lnr">  8 </span><span class="PreProc">#include</span><span class="Constant">&lt;cmath&gt;</span>
+<span class="lnr">  9 </span><span class="PreProc">#include</span><span class="Constant">&lt;algorithm&gt;</span>
+<span class="lnr"> 10 </span><span class="PreProc">#include</span><span class="Constant">&lt;string&gt;</span>
+<span class="lnr"> 11 </span><span class="PreProc">#include</span><span class="Constant">&lt;map&gt;</span>
+<span class="lnr"> 12 </span><span class="PreProc">#include</span><span class="Constant">&lt;set&gt;</span>
+<span class="lnr"> 13 </span><span class="PreProc">#include</span><span class="Constant">&lt;iostream&gt;</span>
+<span class="lnr"> 14 </span><span class="PreProc">#include</span><span class="Constant">&lt;vector&gt;</span>
+<span class="lnr"> 15 </span><span class="PreProc">#include</span><span class="Constant">&lt;queue&gt;</span>
+<span class="lnr"> 16 </span>
+<span class="lnr"> 17 </span><span class="Statement">using</span> <span class="Type">namespace</span> std;
+<span class="lnr"> 18 </span><span class="PreProc">#define sz(v) ((</span><span class="Type">int</span><span class="PreProc">)(v).size())</span>
+<span class="lnr"> 19 </span><span class="PreProc">#define rep(i, n) </span><span class="Statement">for</span><span class="PreProc"> (</span><span class="Type">int</span><span class="PreProc"> i = </span><span class="Constant">0</span><span class="PreProc">; i &lt; (n); ++i)</span>
+<span class="lnr"> 20 </span><span class="PreProc">#define repf(i, a, b) </span><span class="Statement">for</span><span class="PreProc"> (</span><span class="Type">int</span><span class="PreProc"> i = (a); i &lt;= (b); ++i)</span>
+<span class="lnr"> 21 </span><span class="PreProc">#define repd(i, a, b) </span><span class="Statement">for</span><span class="PreProc"> (</span><span class="Type">int</span><span class="PreProc"> i = (a); i &gt;= (b); --i)</span>
+<span class="lnr"> 22 </span><span class="PreProc">#define clr(x) memset(x,</span><span class="Constant">0</span><span class="PreProc">,</span><span class="Statement">sizeof</span><span class="PreProc">(x))</span>
+<span class="lnr"> 23 </span><span class="PreProc">#define clrs( x , y ) memset(x,y,</span><span class="Statement">sizeof</span><span class="PreProc">(x))</span>
+<span class="lnr"> 24 </span><span class="PreProc">#define out(x) printf(#x</span><span class="Constant">&quot; </span><span class="Special">%d</span><span class="Special">\n</span><span class="Constant">&quot;</span><span class="PreProc">, x)</span>
+<span class="lnr"> 25 </span><span class="PreProc">#define sqr(x) ((x) * (x))</span>
+<span class="lnr"> 26 </span><span class="Type">typedef</span> <span class="Type">long</span> <span class="Type">long</span> lint;
+<span class="lnr"> 27 </span>
+<span class="lnr"> 28 </span><span class="Type">const</span> <span class="Type">double</span> eps = <span class="Constant">1e-6</span>;
+<span class="lnr"> 29 </span>
+<span class="lnr"> 30 </span><span class="PreProc">#define TPN </span><span class="Constant">1010</span>
+<span class="lnr"> 31 </span><span class="Type">struct</span> TPoint{
+<span class="lnr"> 32 </span>    <span class="Type">double</span> x,y,z;
+<span class="lnr"> 33 </span>    <span class="Type">void</span> get(){scanf(<span class="Constant">&quot;</span><span class="Special">%lf%lf%lf</span><span class="Constant">&quot;</span>,&amp;x,&amp;y,&amp;z);}
+<span class="lnr"> 34 </span>    TPoint(){}
+<span class="lnr"> 35 </span>    TPoint(<span class="Type">double</span> _x,<span class="Type">double</span> _y,<span class="Type">double</span> _z):x(_x),y(_y),z(_z){}
+<span class="lnr"> 36 </span>    TPoint <span class="Statement">operator</span>-(<span class="Type">const</span> TPoint p) {<span class="Statement">return</span> TPoint(x-p.x,y-p.y,z-p.z);}
+<span class="lnr"> 37 </span>    TPoint <span class="Statement">operator</span>*(<span class="Type">const</span> TPoint p) {<span class="Statement">return</span> TPoint(y*p.z-z*p.y,z*p.x-x*p.z,x*p.y-y*p.x);}<span class="Comment">//叉积</span>
+<span class="lnr"> 38 </span>    <span class="Type">double</span> <span class="Statement">operator</span>^(<span class="Type">const</span> TPoint p) {<span class="Statement">return</span> x*p.x+y*p.y+z*p.z;}<span class="Comment">//点积</span>
+<span class="lnr"> 39 </span>};
+<span class="lnr"> 40 </span><span class="Type">struct</span> fac{
+<span class="lnr"> 41 </span>    <span class="Type">int</span> a,b,c;<span class="Comment">//凸包一个面上的三个点的编号</span>
+<span class="lnr"> 42 </span>    <span class="Type">bool</span> ok;<span class="Comment">//该面是否是最终凸包中的面</span>
+<span class="lnr"> 43 </span>};
+<span class="lnr"> 44 </span><span class="Type">struct</span> T3dhull{
+<span class="lnr"> 45 </span>    <span class="Type">int</span> n;<span class="Comment">//初始点数</span>
+<span class="lnr"> 46 </span>    TPoint ply[TPN];<span class="Comment">//初始点</span>
+<span class="lnr"> 47 </span>    <span class="Type">int</span> trianglecnt;<span class="Comment">//凸包上三角形数</span>
+<span class="lnr"> 48 </span>    fac tri[TPN];<span class="Comment">//凸包三角形</span>
+<span class="lnr"> 49 </span>    <span class="Type">int</span> vis[TPN][TPN];<span class="Comment">//点i到点j是属于哪个面</span>
+<span class="lnr"> 50 </span>    <span class="Type">void</span> add(){ply[n++].get();}
+<span class="lnr"> 51 </span>    <span class="Type">double</span> dist(TPoint a){<span class="Statement">return</span> sqrt(a.x*a.x+a.y*a.y+a.z*a.z);}<span class="Comment">//两点长度</span>
+<span class="lnr"> 52 </span>    <span class="Type">double</span> area(TPoint a,TPoint b,TPoint c){<span class="Statement">return</span> dist((b-a)*(c-a));}<span class="Comment">//三角形面积*2</span>
+<span class="lnr"> 53 </span>    <span class="Type">double</span> volume(TPoint a,TPoint b,TPoint c,TPoint d){<span class="Statement">return</span> (b-d)*(c-d)^(a-d);}<span class="Comment">//四面体有向体积*6</span>
+<span class="lnr"> 54 </span>    <span class="Type">double</span> ptoplane(TPoint &amp;p,fac &amp;f){<span class="Comment">//正：点在面同向</span>
+<span class="lnr"> 55 </span>        TPoint m=ply[f.b]-ply[f.a],n=ply[f.c]-ply[f.a],t=p-ply[f.a];
+<span class="lnr"> 56 </span>        <span class="Statement">return</span> (m*n)^t;
+<span class="lnr"> 57 </span>    }
+<span class="lnr"> 58 </span>    <span class="Type">void</span> deal(<span class="Type">int</span> p,<span class="Type">int</span> a,<span class="Type">int</span> b){
+<span class="lnr"> 59 </span>        <span class="Type">int</span> f=vis[a][b];<span class="Comment">//与当前面(cnt)共边(ab)的那个面</span>
+<span class="lnr"> 60 </span>        fac add;
+<span class="lnr"> 61 </span>        <span class="Statement">if</span>(tri[f].ok){
+<span class="lnr"> 62 </span>            <span class="Statement">if</span>((ptoplane(ply[p],tri[f]))&gt;eps) dfs(p,f);<span class="Comment">//如果p点能看到该面f，则继续深度探索f的3条边，以便更新新的凸包面</span>
+<span class="lnr"> 63 </span>            <span class="Statement">else</span><span class="Comment">//否则因为p点只看到cnt面，看不到f面，则p点和a、b点组成一个三角形。</span>
+<span class="lnr"> 64 </span>            {
+<span class="lnr"> 65 </span>                add.a=b,add.b=a,add.c=p,add.ok=<span class="Constant">1</span>;
+<span class="lnr"> 66 </span>                vis[p][b]=vis[a][p]=vis[b][a]=trianglecnt;
+<span class="lnr"> 67 </span>                tri[trianglecnt++]=add;
+<span class="lnr"> 68 </span>            }
+<span class="lnr"> 69 </span>        }
+<span class="lnr"> 70 </span>    }
+<span class="lnr"> 71 </span>    <span class="Type">void</span> dfs(<span class="Type">int</span> p,<span class="Type">int</span> cnt){<span class="Comment">//维护凸包，如果点p在凸包外更新凸包</span>
+<span class="lnr"> 72 </span>        tri[cnt].ok=<span class="Constant">0</span>;<span class="Comment">//当前面需要删除，因为它在更大的凸包里面</span>
+<span class="lnr"> 73 </span>
+<span class="lnr"> 74 </span><span class="Comment">//下面把边反过来(先b,后a)，以便在deal()中判断与当前面(cnt)共边(ab)的那个面。即判断与当头面(cnt)相邻的3个面(它们与当前面的共边是反向的，如下图中(1)的法线朝外(即逆时针)的面130和312,它们共边13，但一个方向是13,另一个方向是31)       </span>
+<span class="lnr"> 75 </span>
+<span class="lnr"> 76 </span>        deal(p,tri[cnt].b,tri[cnt].a);
+<span class="lnr"> 77 </span>        deal(p,tri[cnt].c,tri[cnt].b);
+<span class="lnr"> 78 </span>        deal(p,tri[cnt].a,tri[cnt].c);
+<span class="lnr"> 79 </span>    }
+<span class="lnr"> 80 </span>    <span class="Type">bool</span> same(<span class="Type">int</span> s,<span class="Type">int</span> e){<span class="Comment">//判断两个面是否为同一面</span>
+<span class="lnr"> 81 </span>        TPoint a=ply[tri[s].a],b=ply[tri[s].b],c=ply[tri[s].c];
+<span class="lnr"> 82 </span>        <span class="Statement">return</span> fabs(volume(a,b,c,ply[tri[e].a]))&lt;eps
+<span class="lnr"> 83 </span>            &amp;&amp;fabs(volume(a,b,c,ply[tri[e].b]))&lt;eps
+<span class="lnr"> 84 </span>            &amp;&amp;fabs(volume(a,b,c,ply[tri[e].c]))&lt;eps;
+<span class="lnr"> 85 </span>    }
+<span class="lnr"> 86 </span>    <span class="Type">void</span> construct(){<span class="Comment">//构建凸包</span>
+<span class="lnr"> 87 </span>        <span class="Type">int</span> i,j;
+<span class="lnr"> 88 </span>        trianglecnt=<span class="Constant">0</span>;
+<span class="lnr"> 89 </span>        <span class="Statement">if</span>(n&lt;<span class="Constant">4</span>) <span class="Statement">return</span> ;
+<span class="lnr"> 90 </span>        <span class="Type">bool</span> tmp=<span class="Constant">true</span>;
+<span class="lnr"> 91 </span>        <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;n;i++)<span class="Comment">//前两点不共点</span>
+<span class="lnr"> 92 </span>        {
+<span class="lnr"> 93 </span>            <span class="Statement">if</span>((dist(ply[<span class="Constant">0</span>]-ply[i]))&gt;eps)
+<span class="lnr"> 94 </span>            {
+<span class="lnr"> 95 </span>                swap(ply[<span class="Constant">1</span>],ply[i]); tmp=<span class="Constant">false</span>; <span class="Statement">break</span>;
+<span class="lnr"> 96 </span>            }
+<span class="lnr"> 97 </span>        }
+<span class="lnr"> 98 </span>        <span class="Statement">if</span>(tmp) <span class="Statement">return</span>;
+<span class="lnr"> 99 </span>        tmp=<span class="Constant">true</span>;
+<span class="lnr">100 </span>        <span class="Statement">for</span>(i=<span class="Constant">2</span>;i&lt;n;i++){<span class="Comment">//前三点不共线</span>
+<span class="lnr">101 </span>            <span class="Statement">if</span>((dist((ply[<span class="Constant">0</span>]-ply[<span class="Constant">1</span>])*(ply[<span class="Constant">1</span>]-ply[i])))&gt;eps){
+<span class="lnr">102 </span>                swap(ply[<span class="Constant">2</span>],ply[i]); tmp=<span class="Constant">false</span>; <span class="Statement">break</span>;
+<span class="lnr">103 </span>            }
+<span class="lnr">104 </span>        }
+<span class="lnr">105 </span>        <span class="Statement">if</span>(tmp) <span class="Statement">return</span> ;
+<span class="lnr">106 </span>        tmp=<span class="Constant">true</span>;
+<span class="lnr">107 </span>        <span class="Statement">for</span>(i=<span class="Constant">3</span>;i&lt;n;i++){<span class="Comment">//前四点不共面</span>
+<span class="lnr">108 </span>            <span class="Statement">if</span>(fabs((ply[<span class="Constant">0</span>]-ply[<span class="Constant">1</span>])*(ply[<span class="Constant">1</span>]-ply[<span class="Constant">2</span>])^(ply[<span class="Constant">0</span>]-ply[i]))&gt;eps){
+<span class="lnr">109 </span>                swap(ply[<span class="Constant">3</span>],ply[i]); tmp=<span class="Constant">false</span>; <span class="Statement">break</span>;
+<span class="lnr">110 </span>            }
+<span class="lnr">111 </span>        }
+<span class="lnr">112 </span>        <span class="Statement">if</span>(tmp) <span class="Statement">return</span> ;
+<span class="lnr">113 </span>        fac add;
+<span class="lnr">114 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>;i&lt;<span class="Constant">4</span>;i++){<span class="Comment">//构建初始四面体(4个点为ply[0],ply[1],ply[2],ply[3])</span>
+<span class="lnr">115 </span>            add.a=(i+<span class="Constant">1</span>)%<span class="Constant">4</span>,add.b=(i+<span class="Constant">2</span>)%<span class="Constant">4</span>,add.c=(i+<span class="Constant">3</span>)%<span class="Constant">4</span>,add.ok=<span class="Constant">1</span>;
+<span class="lnr">116 </span>            <span class="Statement">if</span>((ptoplane(ply[i],add))&gt;<span class="Constant">0</span>) swap(add.b,add.c);<span class="Comment">//保证逆时针，即法向量朝外，这样新点才可看到。</span>
+<span class="lnr">117 </span>            vis[add.a][add.b]=vis[add.b][add.c]=vis[add.c][add.a]=trianglecnt;<span class="Comment">//逆向的有向边保存</span>
+<span class="lnr">118 </span>            tri[trianglecnt++]=add;
+<span class="lnr">119 </span>        }
+<span class="lnr">120 </span>        <span class="Statement">for</span>(i=<span class="Constant">4</span>;i&lt;n;i++){<span class="Comment">//构建更新凸包</span>
+<span class="lnr">121 </span>            <span class="Statement">for</span>(j=<span class="Constant">0</span>;j&lt;trianglecnt;j++){<span class="Comment">//对每个点判断是否在当前3维凸包内或外(i表示当前点,j表示当前面)</span>
+<span class="lnr">122 </span>                <span class="Statement">if</span>(tri[j].ok&amp;&amp;(ptoplane(ply[i],tri[j]))&gt;eps){<span class="Comment">//对当前凸包面进行判断，看是否点能否看到这个面</span>
+<span class="lnr">123 </span>                    dfs(i,j); <span class="Statement">break</span>;<span class="Comment">//点能看到当前面，更新凸包的面(递归，可能不止更新一个面)。当前点更新完成后break跳出循环</span>
+<span class="lnr">124 </span>
+<span class="lnr">125 </span>                }
+<span class="lnr">126 </span>            }
+<span class="lnr">127 </span>        }
+<span class="lnr">128 </span>        <span class="Type">int</span> cnt=trianglecnt;<span class="Comment">//这些面中有一些tri[i].ok=0，它们属于开始建立但后来因为在更大凸包内故需删除的，所以下面几行代码的作用是只保存最外层的凸包</span>
+<span class="lnr">129 </span>        trianglecnt=<span class="Constant">0</span>;
+<span class="lnr">130 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>;i&lt;cnt;i++){
+<span class="lnr">131 </span>            <span class="Statement">if</span>(tri[i].ok)
+<span class="lnr">132 </span>                tri[trianglecnt++]=tri[i];
+<span class="lnr">133 </span>        }
+<span class="lnr">134 </span>    }
+<span class="lnr">135 </span>    <span class="Type">double</span> area(){<span class="Comment">//表面积</span>
+<span class="lnr">136 </span>        <span class="Type">double</span> ret=<span class="Constant">0</span>;
+<span class="lnr">137 </span>        <span class="Statement">for</span>(<span class="Type">int</span> i=<span class="Constant">0</span>;i&lt;trianglecnt;i++)
+<span class="lnr">138 </span>            ret+=area(ply[tri[i].a],ply[tri[i].b],ply[tri[i].c]);
+<span class="lnr">139 </span>        <span class="Statement">return</span> ret/<span class="Constant">2</span>;
+<span class="lnr">140 </span>    }
+<span class="lnr">141 </span>    <span class="Type">double</span> volume(){<span class="Comment">//体积</span>
+<span class="lnr">142 </span>        TPoint p(<span class="Constant">0</span>,<span class="Constant">0</span>,<span class="Constant">0</span>);
+<span class="lnr">143 </span>        <span class="Type">double</span> ret=<span class="Constant">0</span>;
+<span class="lnr">144 </span>        <span class="Statement">for</span>(<span class="Type">int</span> i=<span class="Constant">0</span>;i&lt;trianglecnt;i++)
+<span class="lnr">145 </span>            ret+=volume(p,ply[tri[i].a],ply[tri[i].b],ply[tri[i].c]);
+<span class="lnr">146 </span>        <span class="Statement">return</span> fabs(ret/<span class="Constant">6</span>);
+<span class="lnr">147 </span>    }
+<span class="lnr">148 </span>    <span class="Type">int</span> facetri() {<span class="Statement">return</span> trianglecnt;}<span class="Comment">//表面三角形数</span>
+<span class="lnr">149 </span>    <span class="Type">int</span> facepolygon(){<span class="Comment">//表面多边形数</span>
+<span class="lnr">150 </span>        <span class="Type">int</span> ans=<span class="Constant">0</span>,i,j,k;
+<span class="lnr">151 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>;i&lt;trianglecnt;i++){
+<span class="lnr">152 </span>            <span class="Statement">for</span>(j=<span class="Constant">0</span>,k=<span class="Constant">1</span>;j&lt;i;j++){
+<span class="lnr">153 </span>                <span class="Statement">if</span>(same(i,j)) {k=<span class="Constant">0</span>;<span class="Statement">break</span>;}
+<span class="lnr">154 </span>            }
+<span class="lnr">155 </span>            ans+=k;
+<span class="lnr">156 </span>        }
+<span class="lnr">157 </span>        <span class="Statement">return</span> ans;
+<span class="lnr">158 </span>    }
+<span class="lnr">159 </span>
+<span class="lnr">160 </span>}T;
+<span class="lnr">161 </span><span class="Type">int</span> main() {
+<span class="lnr">162 </span>    freopen(<span class="Constant">&quot;hdu3662.in&quot;</span>, <span class="Constant">&quot;r&quot;</span>, <span class="Constant">stdin</span>);
+<span class="lnr">163 </span>    <span class="Type">int</span> n;
+<span class="lnr">164 </span>    <span class="Statement">while</span> (scanf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant">&quot;</span>, &amp;n) == <span class="Constant">1</span>) {
+<span class="lnr">165 </span>        rep (i, n)
+<span class="lnr">166 </span>            T.ply[i].get();
+<span class="lnr">167 </span>        T.n = n;
+<span class="lnr">168 </span>        T.construct();
+<span class="lnr">169 </span>        printf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Special">\n</span><span class="Constant">&quot;</span>, T.facepolygon());
+<span class="lnr">170 </span>    }
+<span class="lnr">171 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">172 </span>}
+</pre>
+</body>
+</html>

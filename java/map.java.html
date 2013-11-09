@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>E:\Dropbox\acm2013\m模板\java\map.java.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="java">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Constant { color: #ff00ff; }
+.Statement { color: #804040; font-weight: bold; }
+.Type { color: #2e8b57; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Type">public</span> <span class="Type">static</span> Map&lt;BigInteger, BigInteger&gt; dic;
+<span class="lnr"> 2 </span><span class="Type">public</span> <span class="Type">static</span> BigInteger gao(BigInteger n) {
+<span class="lnr"> 3 </span>    <span class="Statement">if</span> (dic.containsKey(n) == <span class="Constant">false</span>) {
+<span class="lnr"> 4 </span>        dic.put(n, res3);
+<span class="lnr"> 5 </span>    }
+<span class="lnr"> 6 </span>    <span class="Statement">return</span> dic.get(n);
+<span class="lnr"> 7 </span>}
+<span class="lnr"> 8 </span><span class="Type">public</span> <span class="Type">static</span> <span class="Type">void</span> main(String[] args) {
+<span class="lnr"> 9 </span>    dic = <span class="Statement">new</span> HashMap();
+<span class="lnr">10 </span>    dic.clear();
+<span class="lnr">11 </span>    gao(x);
+<span class="lnr">12 </span>}
+</pre>
+</body>
+</html>

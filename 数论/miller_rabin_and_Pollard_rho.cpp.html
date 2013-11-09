@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=GBK">
-<title>D:\code\acm\模板\数论\miller_rabin_and_Pollard_rho.cpp.html</title>
+<title>E:\Dropbox\acm2013\m模板\数论\miller_rabin_and_Pollard_rho.cpp.html</title>
 <meta name="Generator" content="Vim/7.3">
 <meta name="plugin-version" content="vim7.3_v6">
 <meta name="syntax" content="cpp">
@@ -12,12 +12,12 @@
 pre { font-family: monospace; color: #000000; background-color: #ffffff; }
 body { font-family: monospace; color: #000000; background-color: #ffffff; }
 .lnr { color: #804040; }
-.Special { color: #ff00ff; }
-.Statement { color: #804040; }
-.Type { color: #0000ff; }
+.Special { color: #6a5acd; }
+.Statement { color: #804040; font-weight: bold; }
+.Type { color: #2e8b57; font-weight: bold; }
 .Constant { color: #ff00ff; }
 .PreProc { color: #a020f0; }
-.Comment { color: #ff0000; }
+.Comment { color: #0000ff; }
 -->
 </style>
 </head>
@@ -140,33 +140,36 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
 <span class="lnr">115 </span><span class="Comment">//分解质数因子</span>
 <span class="lnr">116 </span>u64 prime(u64 a)
 <span class="lnr">117 </span>{
-<span class="lnr">118 </span>    <span class="Statement">if</span>(Miller_Rabin(a)) <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">118 </span>    <span class="Statement">if</span>(Miller_Rabin(a) || a == <span class="Constant">0</span>) <span class="Statement">return</span> <span class="Constant">0</span>;
 <span class="lnr">119 </span>    u64 t = Pollard(a), p;
 <span class="lnr">120 </span>    <span class="Statement">if</span>(p = prime(t)) <span class="Statement">return</span> p;
 <span class="lnr">121 </span>    <span class="Statement">else</span> <span class="Statement">return</span> t;
 <span class="lnr">122 </span>}
 <span class="lnr">123 </span>
-<span class="lnr">124 </span><span class="Type">int</span> main(<span class="Type">void</span>)
-<span class="lnr">125 </span>{
-<span class="lnr">126 </span>    u64 l, a, t;
-<span class="lnr">127 </span>    limit = <span class="Constant">1</span>;
-<span class="lnr">128 </span>    limit = limit &lt;&lt; <span class="Constant">63</span>; <span class="Comment">//动态化分段使用</span>
-<span class="lnr">129 </span>    <span class="Statement">while</span>(scanf(<span class="Constant">&quot;%I64u&quot;</span>, &amp;a) != <span class="Constant">EOF</span>)
-<span class="lnr">130 </span>    {
-<span class="lnr">131 </span>        m = <span class="Constant">0</span>;
-<span class="lnr">132 </span>        <span class="Statement">while</span>(a &gt; <span class="Constant">1</span>)
-<span class="lnr">133 </span>        {
-<span class="lnr">134 </span>            <span class="Statement">if</span>(Miller_Rabin(a)) <span class="Statement">break</span>;
-<span class="lnr">135 </span>            t = prime(a);
-<span class="lnr">136 </span>            factor[m++] = t;
-<span class="lnr">137 </span>            a /= t;
-<span class="lnr">138 </span>        }
-<span class="lnr">139 </span>        <span class="Statement">if</span>(a &gt; <span class="Constant">0</span>) factor[m++] = a;
-<span class="lnr">140 </span>        <span class="Statement">for</span>(l = <span class="Constant">0</span>; l &lt; m; l++)
-<span class="lnr">141 </span>            printf(<span class="Constant">&quot;%I64u</span><span class="Special">\n</span><span class="Constant">&quot;</span>, factor[l]);
-<span class="lnr">142 </span>    }
-<span class="lnr">143 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
-<span class="lnr">144 </span>}
+<span class="lnr">124 </span>
+<span class="lnr">125 </span><span class="Comment">//622057148 155514287 会跪</span>
+<span class="lnr">126 </span><span class="Type">int</span> main(<span class="Type">void</span>)
+<span class="lnr">127 </span>{
+<span class="lnr">128 </span>    u64 l, a, t;
+<span class="lnr">129 </span>    limit = <span class="Constant">1</span>;
+<span class="lnr">130 </span>    limit = limit &lt;&lt; <span class="Constant">63</span>; <span class="Comment">//动态化分段使用</span>
+<span class="lnr">131 </span>    <span class="Statement">while</span>(scanf(<span class="Constant">&quot;%I64u&quot;</span>, &amp;a) != <span class="Constant">EOF</span>)
+<span class="lnr">132 </span>    {
+<span class="lnr">133 </span>        m = <span class="Constant">0</span>;
+<span class="lnr">134 </span>        <span class="Statement">while</span>(a &gt; <span class="Constant">1</span>)
+<span class="lnr">135 </span>        {
+<span class="lnr">136 </span>            <span class="Statement">if</span>(Miller_Rabin(a)) <span class="Statement">break</span>;
+<span class="lnr">137 </span>            t = prime(a);
+<span class="lnr">138 </span>            <span class="Statement">if</span> (t == <span class="Constant">0</span>) <span class="Statement">break</span>;
+<span class="lnr">139 </span>            factor[m++] = t;
+<span class="lnr">140 </span>            a /= t;
+<span class="lnr">141 </span>        }
+<span class="lnr">142 </span>        <span class="Statement">if</span>(a &gt; <span class="Constant">0</span>) factor[m++] = a;
+<span class="lnr">143 </span>        <span class="Statement">for</span>(l = <span class="Constant">0</span>; l &lt; m; l++)
+<span class="lnr">144 </span>            printf(<span class="Constant">&quot;%I64u</span><span class="Special">\n</span><span class="Constant">&quot;</span>, factor[l]);
+<span class="lnr">145 </span>    }
+<span class="lnr">146 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">147 </span>}
 </pre>
 </body>
 </html>

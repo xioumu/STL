@@ -1,19 +1,3 @@
-/*
- * Author:  xioumu
- * Created Time:  2012-3-16 1:00:23
- * File Name: ural1297.cpp
- * solve: ural1297.cpp
- */
-#include<cstdio>
-#include<cstring>
-#include<cstdlib>
-#include<cmath>
-#include<algorithm>
-#include<string>
-using namespace std;
-#define inf 1e-8
-#define MAXN 2007
-typedef long long int64;
 int a[MAXN], height[MAXN], myrank[MAXN], sa[MAXN];
 int wa[MAXN], wb[MAXN], wv[MAXN], wws[MAXN];
 int rmq[100][MAXN];
@@ -78,12 +62,12 @@ int main(){
         for(i=0; i<n; i++)  a[i] = s[i];
         a[n] = 200;    
         for(i=n+1; i<=n+n; i++)  a[i] = s[n + n - i];
-        a[n+n+1] = 0;
-        getsa(a, n+n+2, 300, sa); 
-        getheight(a, sa, n+n+1, height);
+        a[n+n+1] = 0; //源字符串长n + n，在末尾加0
+        getsa(a, n+n+2, 300, sa);  //加0后字符串最后一个字符在n + n + 1
+        getheight(a, sa, n+n+1, height); 
         getrmq(height, n+n+1, rmq);
         int ans = -1, ansb;
-        for(i=0; i<n; i++){
+        for(i=0; i<n; i++){ 
             k = find(rmq, myrank[i], myrank[n + n - i]);
             if(ans < 2*k - 1){
                 ans = 2 * k - 1;

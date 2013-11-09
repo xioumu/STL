@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>E:\Dropbox\acm2013\m模板\计算几何\半平面交.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Constant { color: #ff00ff; }
+.Comment { color: #0000ff; }
+.Statement { color: #804040; font-weight: bold; }
+.Type { color: #2e8b57; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Type">struct</span> line {
+<span class="lnr"> 2 </span>    point p, v;
+<span class="lnr"> 3 </span>    <span class="Type">double</span> ang;
+<span class="lnr"> 4 </span>    line() {}
+<span class="lnr"> 5 </span>    line(point p, point v) : p(p), v(v) { ang = atan2(v.y, v.x); }
+<span class="lnr"> 6 </span>    <span class="Type">bool</span> <span class="Statement">operator</span> &lt; (<span class="Type">const</span> line &amp;l) <span class="Type">const</span> { <span class="Statement">return</span> ang &lt; l.ang; }
+<span class="lnr"> 7 </span>};
+<span class="lnr"> 8 </span>
+<span class="lnr"> 9 </span><span class="Comment">//点p在有向直线l的左边（线上不算）</span>
+<span class="lnr">10 </span><span class="Type">bool</span> onLeft(line l, point p) {
+<span class="lnr">11 </span>    <span class="Statement">return</span> sgn(l.v * (p - l.p)) &gt; <span class="Constant">0</span>;
+<span class="lnr">12 </span>}
+<span class="lnr">13 </span>
+<span class="lnr">14 </span> <span class="Comment">//二直线交点，假设交点唯一存在</span>
+<span class="lnr">15 </span>point getIntersection(line a, line b) {
+<span class="lnr">16 </span>    point u = a.p - b.p;
+<span class="lnr">17 </span>    <span class="Type">double</span> t = (b.v * u) / (a.v * b.v);
+<span class="lnr">18 </span>    <span class="Statement">return</span> a.p + a.v * t;
+<span class="lnr">19 </span>}
+<span class="lnr">20 </span>
+<span class="lnr">21 </span>point p[maxn];
+<span class="lnr">22 </span>line q[maxn];
+<span class="lnr">23 </span><span class="Type">int</span> halfPlane(vector&lt;line&gt; l, vector&lt;point&gt; &amp;poly) { <span class="Comment">//l:anti-clockwise</span>
+<span class="lnr">24 </span>    <span class="Type">int</span> n = sz(l);
+<span class="lnr">25 </span>    sort(l.begin(), l.end());
+<span class="lnr">26 </span>    <span class="Type">int</span> first, last;
+<span class="lnr">27 </span>    q[first = last = <span class="Constant">0</span>] = l[<span class="Constant">0</span>];
+<span class="lnr">28 </span>    <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">1</span>; i &lt; n; i++) {
+<span class="lnr">29 </span>        <span class="Statement">while</span> (first &lt; last &amp;&amp; !onLeft(l[i], p[last - <span class="Constant">1</span>])) last--;
+<span class="lnr">30 </span>        <span class="Statement">while</span> (first &lt; last &amp;&amp; !onLeft(l[i], p[first])) first++;
+<span class="lnr">31 </span>        q[++last] = l[i];
+<span class="lnr">32 </span>        <span class="Statement">if</span> (sgn(q[last].v * q[last - <span class="Constant">1</span>].v) == <span class="Constant">0</span>) {
+<span class="lnr">33 </span>            last--;
+<span class="lnr">34 </span>            <span class="Statement">if</span> (onLeft(q[last], l[i].p)) q[last] = l[i];
+<span class="lnr">35 </span>        }
+<span class="lnr">36 </span>        <span class="Statement">if</span> (first &lt; last) p[last - <span class="Constant">1</span>] = getIntersection(q[last - <span class="Constant">1</span>], q[last]);
+<span class="lnr">37 </span>    }
+<span class="lnr">38 </span>    <span class="Statement">while</span> (first &lt; last &amp;&amp; !onLeft(q[first], p[last - <span class="Constant">1</span>])) last--;
+<span class="lnr">39 </span>
+<span class="lnr">40 </span>    poly.clear();
+<span class="lnr">41 </span>    <span class="Statement">if</span> (last - first &lt;= <span class="Constant">1</span>) <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">42 </span>    p[last] = getIntersection(q[last], q[first]);
+<span class="lnr">43 </span>    <span class="Type">int</span> m = <span class="Constant">0</span>;
+<span class="lnr">44 </span>    <span class="Statement">for</span> (<span class="Type">int</span> i = first; i &lt;= last; i++) {
+<span class="lnr">45 </span>        poly.push_back(p[i]);
+<span class="lnr">46 </span>        m++;
+<span class="lnr">47 </span>    }
+<span class="lnr">48 </span>    <span class="Statement">return</span> m;
+<span class="lnr">49 </span>}
+</pre>
+</body>
+</html>

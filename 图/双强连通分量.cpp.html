@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=GBK">
-<title>D:\code\acm\m模板\图\双强连通分量.cpp.html</title>
+<title>E:\Dropbox\acm2013\m模板\图\双强连通分量.cpp.html</title>
 <meta name="Generator" content="Vim/7.3">
 <meta name="plugin-version" content="vim7.3_v6">
 <meta name="syntax" content="cpp">
@@ -12,12 +12,11 @@
 pre { font-family: monospace; color: #000000; background-color: #ffffff; }
 body { font-family: monospace; color: #000000; background-color: #ffffff; }
 .lnr { color: #804040; }
-.Comment { color: #ee0000; }
-.Special { color: #ff1493; }
-.Type { color: #0000ff; font-weight: bold; }
-.Statement { color: #0000ff; font-weight: bold; }
-.Constant { color: #00cd00; }
-.PreProc { color: #cd00cd; }
+.Special { color: #6a5acd; }
+.Type { color: #2e8b57; font-weight: bold; }
+.Statement { color: #804040; font-weight: bold; }
+.Constant { color: #ff00ff; }
+.PreProc { color: #a020f0; }
 -->
 </style>
 </head>
@@ -32,94 +31,91 @@ body { font-family: monospace; color: #000000; background-color: #ffffff; }
 <span class="lnr"> 7 </span><span class="Type">int</span> a[MAXN][MAXN],f[MAXN];
 <span class="lnr"> 8 </span><span class="Type">int</span> n,m,ans;
 <span class="lnr"> 9 </span><span class="Type">void</span> init(){
-<span class="lnr">10 </span>   <span class="Type">int</span> i,j,k,r,w;
-<span class="lnr">11 </span>   <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++)
-<span class="lnr">12 </span>      <span class="Statement">for</span>(j=i+<span class="Constant">1</span>;j&lt;=n;j++)
-<span class="lnr">13 </span>         a[i][j] = a[j][i] = <span class="Constant">1</span>;
-<span class="lnr">14 </span>   <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=m;i++){
-<span class="lnr">15 </span>      scanf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant"> </span><span class="Special">%d</span><span class="Constant">&quot;</span>,&amp;r,&amp;w);
-<span class="lnr">16 </span>      a[r][w] = a[w][r] = <span class="Constant">0</span>;
-<span class="lnr">17 </span>   }
+<span class="lnr">10 </span>    <span class="Type">int</span> i,j,k,r,w;
+<span class="lnr">11 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++)
+<span class="lnr">12 </span>        <span class="Statement">for</span>(j=i+<span class="Constant">1</span>;j&lt;=n;j++)
+<span class="lnr">13 </span>            a[i][j] = a[j][i] = <span class="Constant">1</span>;
+<span class="lnr">14 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=m;i++){
+<span class="lnr">15 </span>        scanf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant"> </span><span class="Special">%d</span><span class="Constant">&quot;</span>,&amp;r,&amp;w);
+<span class="lnr">16 </span>        a[r][w] = a[w][r] = <span class="Constant">0</span>;
+<span class="lnr">17 </span>    }
 <span class="lnr">18 </span>}
 <span class="lnr">19 </span><span class="Type">int</span> zhan[MAXN],top,v[MAXN],df[MAXN],low[MAXN],num;
 <span class="lnr">20 </span><span class="Type">int</span> d[MAXN];
-<span class="lnr">21 </span><span class="Type">bool</span> pan(<span class="Type">int</span> w)
-<span class="lnr">22 </span>{
-<span class="lnr">23 </span>   <span class="Type">int</span> i,j,k;
-<span class="lnr">24 </span>   <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++){
-<span class="lnr">25 </span>      <span class="Statement">if</span>(a[w][i] &amp;&amp; v[i] != <span class="Constant">0</span>){
-<span class="lnr">26 </span>         <span class="Statement">if</span>(v[i] == <span class="Constant">1</span>){
-<span class="lnr">27 </span>            v[i] = (v[w]-<span class="Constant">1</span>)%<span class="Constant">2</span> + <span class="Constant">2</span>;
-<span class="lnr">28 </span>            <span class="Statement">if</span>( !pan(i) ) <span class="Statement">return</span> <span class="Constant">false</span>;
-<span class="lnr">29 </span>         }
-<span class="lnr">30 </span>         <span class="Statement">else</span> <span class="Statement">if</span>( (v[w]-<span class="Constant">1</span>)%<span class="Constant">2</span> + <span class="Constant">2</span> != v[i])
-<span class="lnr">31 </span>            <span class="Statement">return</span> <span class="Constant">false</span>;
-<span class="lnr">32 </span>      }
-<span class="lnr">33 </span>   }
-<span class="lnr">34 </span>   <span class="Statement">return</span> <span class="Constant">true</span>;
-<span class="lnr">35 </span>}
-<span class="lnr">36 </span><span class="Type">void</span> dfs(<span class="Type">int</span> w,<span class="Type">int</span> fa){
-<span class="lnr">37 </span>   <span class="Type">int</span> i,j,k,r;
-<span class="lnr">38 </span>   df[w] = low[w] = ++num;
-<span class="lnr">39 </span>   zhan[++top] = w;
-<span class="lnr">40 </span>   <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++)
-<span class="lnr">41 </span>      <span class="Statement">if</span>(a[w][i] &amp;&amp; i != fa){
-<span class="lnr">42 </span>         <span class="Statement">if</span>(df[i] == <span class="Constant">0</span>){
-<span class="lnr">43 </span>            dfs(i,w);
-<span class="lnr">44 </span>            low[w] = min(low[w],low[i]);
-<span class="lnr">45 </span>            <span class="Statement">if</span>(low[i] &gt;= df[w]){
-<span class="lnr">46 </span>               memset(v,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(v));
-<span class="lnr">47 </span>               k = top;
-<span class="lnr">48 </span>               <span class="Statement">do</span>{
-<span class="lnr">49 </span>                  v[ zhan[top] ] = <span class="Constant">1</span>;
-<span class="lnr">50 </span>                  top--;
-<span class="lnr">51 </span>               }<span class="Statement">while</span>(zhan[top+<span class="Constant">1</span>] != i);
-<span class="lnr">52 </span>               v[w]=<span class="Constant">1</span>;
-<span class="lnr">53 </span>
-<span class="lnr">54 </span>               <span class="Statement">if</span>(!pan(w) ){
-<span class="lnr">55 </span>                  <span class="Statement">for</span>(k=<span class="Constant">1</span>;k&lt;=n;k++)
-<span class="lnr">56 </span>                     <span class="Statement">if</span>(v[k] &gt;= <span class="Constant">1</span>) {
-<span class="lnr">57 </span>                        d[k] = <span class="Constant">1</span>;
-<span class="lnr">58 </span>                     }
-<span class="lnr">59 </span>               }
-<span class="lnr">60 </span>
+<span class="lnr">21 </span><span class="Type">bool</span> pan(<span class="Type">int</span> w) {
+<span class="lnr">22 </span>    <span class="Type">int</span> i,j,k;
+<span class="lnr">23 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++){
+<span class="lnr">24 </span>        <span class="Statement">if</span>(a[w][i] &amp;&amp; v[i] != <span class="Constant">0</span>){
+<span class="lnr">25 </span>            <span class="Statement">if</span>(v[i] == <span class="Constant">1</span>){
+<span class="lnr">26 </span>                v[i] = (v[w]-<span class="Constant">1</span>)%<span class="Constant">2</span> + <span class="Constant">2</span>;
+<span class="lnr">27 </span>                <span class="Statement">if</span>( !pan(i) ) <span class="Statement">return</span> <span class="Constant">false</span>;
+<span class="lnr">28 </span>            }
+<span class="lnr">29 </span>            <span class="Statement">else</span> <span class="Statement">if</span>( (v[w]-<span class="Constant">1</span>)%<span class="Constant">2</span> + <span class="Constant">2</span> != v[i])
+<span class="lnr">30 </span>                <span class="Statement">return</span> <span class="Constant">false</span>;
+<span class="lnr">31 </span>        }
+<span class="lnr">32 </span>    }
+<span class="lnr">33 </span>    <span class="Statement">return</span> <span class="Constant">true</span>;
+<span class="lnr">34 </span>}
+<span class="lnr">35 </span><span class="Type">void</span> dfs(<span class="Type">int</span> w,<span class="Type">int</span> fa){
+<span class="lnr">36 </span>    <span class="Type">int</span> i,j,k,r;
+<span class="lnr">37 </span>    df[w] = low[w] = ++num;
+<span class="lnr">38 </span>    zhan[++top] = w;
+<span class="lnr">39 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++)
+<span class="lnr">40 </span>        <span class="Statement">if</span>(a[w][i] &amp;&amp; i != fa){
+<span class="lnr">41 </span>            <span class="Statement">if</span>(df[i] == <span class="Constant">0</span>){
+<span class="lnr">42 </span>                dfs(i,w);
+<span class="lnr">43 </span>                low[w] = min(low[w],low[i]);
+<span class="lnr">44 </span>                <span class="Statement">if</span>(low[i] &gt;= df[w]){
+<span class="lnr">45 </span>                    memset(v,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(v));
+<span class="lnr">46 </span>                    k = top;
+<span class="lnr">47 </span>                    <span class="Statement">do</span>{
+<span class="lnr">48 </span>                        v[ zhan[top] ] = <span class="Constant">1</span>;
+<span class="lnr">49 </span>                        top--;
+<span class="lnr">50 </span>                    }<span class="Statement">while</span>(zhan[top+<span class="Constant">1</span>] != i);
+<span class="lnr">51 </span>                    v[w]=<span class="Constant">1</span>;
+<span class="lnr">52 </span>
+<span class="lnr">53 </span>                    <span class="Statement">if</span>(!pan(w) ){
+<span class="lnr">54 </span>                        <span class="Statement">for</span>(k=<span class="Constant">1</span>;k&lt;=n;k++)
+<span class="lnr">55 </span>                            <span class="Statement">if</span>(v[k] &gt;= <span class="Constant">1</span>) {
+<span class="lnr">56 </span>                                d[k] = <span class="Constant">1</span>;
+<span class="lnr">57 </span>                            }
+<span class="lnr">58 </span>                    }
+<span class="lnr">59 </span>
+<span class="lnr">60 </span>                }
 <span class="lnr">61 </span>            }
-<span class="lnr">62 </span>         }
-<span class="lnr">63 </span>         <span class="Statement">else</span> low[w] = min(low[w],df[i]);
-<span class="lnr">64 </span>      }
-<span class="lnr">65 </span>
-<span class="lnr">66 </span>}
-<span class="lnr">67 </span><span class="Type">void</span> solve(){
-<span class="lnr">68 </span>   <span class="Type">int</span> i,j,k,r,w;
-<span class="lnr">69 </span>   ans = <span class="Constant">0</span>;
-<span class="lnr">70 </span>   memset(f,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(f));
-<span class="lnr">71 </span>   top = num = <span class="Constant">0</span>;
-<span class="lnr">72 </span>   memset(df,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(df));
-<span class="lnr">73 </span>   memset(low,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(low));
-<span class="lnr">74 </span>   memset(v,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(v));
-<span class="lnr">75 </span>   memset(d,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(d));
-<span class="lnr">76 </span>   <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++){
-<span class="lnr">77 </span>      <span class="Statement">if</span>(df[i] == <span class="Constant">0</span>){
-<span class="lnr">78 </span>         dfs(i,<span class="Constant">0</span>);
-<span class="lnr">79 </span>      }
-<span class="lnr">80 </span>   }
-<span class="lnr">81 </span>   <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++)
-<span class="lnr">82 </span>      <span class="Statement">if</span>(d[i] == <span class="Constant">0</span>){
-<span class="lnr">83 </span>         <span class="Comment">//printf(&quot;%d\n&quot;,i);</span>
-<span class="lnr">84 </span>         ans++;
-<span class="lnr">85 </span>      }
-<span class="lnr">86 </span>   printf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Special">\n</span><span class="Constant">&quot;</span>,ans);
-<span class="lnr">87 </span>}
-<span class="lnr">88 </span><span class="Type">int</span> main()
-<span class="lnr">89 </span>{
-<span class="lnr">90 </span>   <span class="Statement">while</span>(scanf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant"> </span><span class="Special">%d</span><span class="Constant">&quot;</span>,&amp;n,&amp;m) != <span class="Constant">EOF</span> &amp;&amp; n &amp;&amp; m){
-<span class="lnr">91 </span>      init();
-<span class="lnr">92 </span>      solve();
-<span class="lnr">93 </span>   }
-<span class="lnr">94 </span>   <span class="Statement">return</span> <span class="Constant">0</span>;
-<span class="lnr">95 </span>}
-<span class="lnr">96 </span>
-<span class="lnr">97 </span>
+<span class="lnr">62 </span>            <span class="Statement">else</span> low[w] = min(low[w],df[i]);
+<span class="lnr">63 </span>        }
+<span class="lnr">64 </span>
+<span class="lnr">65 </span>}
+<span class="lnr">66 </span><span class="Type">void</span> solve(){
+<span class="lnr">67 </span>    <span class="Type">int</span> i,j,k,r,w;
+<span class="lnr">68 </span>    ans = <span class="Constant">0</span>;
+<span class="lnr">69 </span>    memset(f,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(f));
+<span class="lnr">70 </span>    top = num = <span class="Constant">0</span>;
+<span class="lnr">71 </span>    memset(df,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(df));
+<span class="lnr">72 </span>    memset(low,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(low));
+<span class="lnr">73 </span>    memset(v,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(v));
+<span class="lnr">74 </span>    memset(d,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(d));
+<span class="lnr">75 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++){
+<span class="lnr">76 </span>        <span class="Statement">if</span>(df[i] == <span class="Constant">0</span>){
+<span class="lnr">77 </span>            dfs(i,<span class="Constant">0</span>);
+<span class="lnr">78 </span>        }
+<span class="lnr">79 </span>    }
+<span class="lnr">80 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>;i&lt;=n;i++)
+<span class="lnr">81 </span>        <span class="Statement">if</span>(d[i] == <span class="Constant">0</span>){
+<span class="lnr">82 </span>            ans++;
+<span class="lnr">83 </span>        }
+<span class="lnr">84 </span>    printf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Special">\n</span><span class="Constant">&quot;</span>,ans);
+<span class="lnr">85 </span>}
+<span class="lnr">86 </span><span class="Type">int</span> main() {
+<span class="lnr">87 </span>    <span class="Statement">while</span>(scanf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant"> </span><span class="Special">%d</span><span class="Constant">&quot;</span>,&amp;n,&amp;m) != <span class="Constant">EOF</span> &amp;&amp; n &amp;&amp; m){
+<span class="lnr">88 </span>        init();
+<span class="lnr">89 </span>        solve();
+<span class="lnr">90 </span>    }
+<span class="lnr">91 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">92 </span>}
+<span class="lnr">93 </span>
+<span class="lnr">94 </span>
 </pre>
 </body>
 </html>

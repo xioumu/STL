@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>E:\Dropbox\acm2013\m模板\计算几何\standard.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Comment { color: #0000ff; }
+.Special { color: #6a5acd; }
+.Statement { color: #804040; font-weight: bold; }
+.Constant { color: #ff00ff; }
+.Type { color: #2e8b57; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Type">const</span> <span class="Type">double</span> pi = acos(-<span class="Constant">1.0</span>);
+<span class="lnr"> 2 </span>
+<span class="lnr"> 3 </span><span class="Type">int</span> sgn(<span class="Type">double</span> x) {
+<span class="lnr"> 4 </span>    <span class="Statement">return</span> (x &gt; eps) - (x &lt; -eps);
+<span class="lnr"> 5 </span>}
+<span class="lnr"> 6 </span>
+<span class="lnr"> 7 </span><span class="Type">struct</span> point {
+<span class="lnr"> 8 </span>    <span class="Type">double</span> x, y;
+<span class="lnr"> 9 </span>    point (<span class="Type">double</span> _x = <span class="Constant">0</span>, <span class="Type">double</span> _y = <span class="Constant">0</span>) : x(_x), y(_y) { }
+<span class="lnr">10 </span>    <span class="Type">void</span> input() { scanf(<span class="Constant">&quot;</span><span class="Special">%lf%lf</span><span class="Constant">&quot;</span>, &amp;x, &amp;y); }
+<span class="lnr">11 </span>    <span class="Type">void</span> output() { printf(<span class="Constant">&quot;</span><span class="Special">%.3f</span><span class="Constant"> </span><span class="Special">%.3f</span><span class="Special">\n</span><span class="Constant">&quot;</span>, x, y); }
+<span class="lnr">12 </span>    <span class="Type">double</span> len() <span class="Type">const</span> { <span class="Statement">return</span> sqrt(x * x + y * y); }
+<span class="lnr">13 </span>    point trunc (<span class="Type">double</span> l) <span class="Type">const</span> {
+<span class="lnr">14 </span>        <span class="Type">double</span> r = l / len();
+<span class="lnr">15 </span>        <span class="Statement">return</span> point(x * r, y * r);
+<span class="lnr">16 </span>    }
+<span class="lnr">17 </span>    point rotate_left() <span class="Type">const</span> { <span class="Statement">return</span> point(-y, x); }
+<span class="lnr">18 </span>    point rotate_right() <span class="Type">const</span> { <span class="Statement">return</span> point(y, -x); }
+<span class="lnr">19 </span>    point rotate_left(<span class="Type">double</span> s) <span class="Type">const</span> {
+<span class="lnr">20 </span>        <span class="Type">double</span> c = sqrt(<span class="Constant">1</span> - s * s);
+<span class="lnr">21 </span>        <span class="Statement">return</span> point(x * c - y * s, y * c + x * s);
+<span class="lnr">22 </span>    }
+<span class="lnr">23 </span>    point rotate_right(<span class="Type">double</span> s) <span class="Type">const</span> {
+<span class="lnr">24 </span>        <span class="Type">double</span> c = sqrt(<span class="Constant">1</span> - s * s);
+<span class="lnr">25 </span>        <span class="Statement">return</span> point(x * c + y * s, y * c - x * s);
+<span class="lnr">26 </span>    }
+<span class="lnr">27 </span>    point set() {
+<span class="lnr">28 </span>        <span class="Type">double</span> l = len();
+<span class="lnr">29 </span>        <span class="Statement">return</span> point(x / l, y / l);
+<span class="lnr">30 </span>    }
+<span class="lnr">31 </span>    <span class="Type">bool</span> <span class="Statement">operator</span> == (<span class="Type">const</span> point &amp;p) <span class="Type">const</span> { <span class="Statement">return</span> sgn(x - p.x) == <span class="Constant">0</span> &amp;&amp; sgn(y - p.y) == <span class="Constant">0</span>; }
+<span class="lnr">32 </span>    <span class="Type">double</span> <span class="Statement">operator</span> * (<span class="Type">const</span> point &amp;p) <span class="Type">const</span> { <span class="Statement">return</span> (x * p.y) - (y * p.x); }
+<span class="lnr">33 </span>    <span class="Type">double</span> <span class="Statement">operator</span> ^ (<span class="Type">const</span> point &amp;p) <span class="Type">const</span> { <span class="Statement">return</span> (x * p.x) + (y * p.y); }
+<span class="lnr">34 </span>    point <span class="Statement">operator</span> + (<span class="Type">const</span> point &amp;p) <span class="Type">const</span> { <span class="Statement">return</span> point(x + p.x, y + p.y); }
+<span class="lnr">35 </span>    point <span class="Statement">operator</span> - (<span class="Type">const</span> point &amp;p) <span class="Type">const</span> { <span class="Statement">return</span> point(x - p.x, y - p.y); }
+<span class="lnr">36 </span>    point <span class="Statement">operator</span> / (<span class="Type">double</span> mul) <span class="Type">const</span> { <span class="Statement">return</span> point(x / mul, y / mul); }
+<span class="lnr">37 </span>    point <span class="Statement">operator</span> * (<span class="Type">double</span> mul) <span class="Type">const</span> { <span class="Statement">return</span> point(x * mul, y * mul); }
+<span class="lnr">38 </span>};
+<span class="lnr">39 </span>
+<span class="lnr">40 </span><span class="Type">double</span> getDis(point s, point e, point p) { <span class="Comment">//点p与直线(s,e)的距离</span>
+<span class="lnr">41 </span>    <span class="Statement">return</span> ((e - s) * (p - s)) / (e - s).len();
+<span class="lnr">42 </span>}
+<span class="lnr">43 </span>
+<span class="lnr">44 </span>point verticalPoint(point s, point e, point p) { <span class="Comment">//点p在直线(s,e)的垂点</span>
+<span class="lnr">45 </span>    point rvl, rvr, s2l, s2r, e2;
+<span class="lnr">46 </span>    rvl = v.rotate_left();
+<span class="lnr">47 </span>    rvr = v.rotate_right();
+<span class="lnr">48 </span>    s2l = o + rvl.trunc(h);
+<span class="lnr">49 </span>    s2r = o + rvr.trunc(h);
+<span class="lnr">50 </span>    <span class="Statement">if</span> (sgn(getDis(s, e, s2l)) == <span class="Constant">0</span>)
+<span class="lnr">51 </span>        e2 = s2l;
+<span class="lnr">52 </span>    <span class="Statement">else</span> e2 = s2r;
+<span class="lnr">53 </span>    <span class="Statement">return</span> e2;
+<span class="lnr">54 </span>}
+</pre>
+</body>
+</html>

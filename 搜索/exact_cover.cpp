@@ -1,28 +1,3 @@
-/*
- * Author:  xioumu
- * Created Time:  2012/9/22 0:22:59
- * File Name: dancing.cpp
- * solve: dancing.cpp
- */
-#include<cstdio>
-#include<cstring>
-#include<cstdlib>
-#include<cmath>
-#include<algorithm>
-#include<string>
-#include<map>
-#include<set>
-#include<iostream>
-#include<vector>
-#include<queue>
-using namespace std;
-#define sz(v) ((int)(v).size())
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define repf(i, a, b) for (int i = (a); i <= (b); ++i)
-#define repd(i, a, b) for (int i = (a); i >= (b); --i)
-#define clr(x) memset(x,0,sizeof(x))
-#define clrs( x , y ) memset(x,y,sizeof(x))
-typedef long long lint;
 const int maxint = -1u>>1;
 const double esp = 1e-8;
 const int maxn = 9 + 10;

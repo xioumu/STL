@@ -6,28 +6,16 @@ int sgn(double x) {
 
 struct point {
     double x, y;
-    point (double _x = 0, double _y = 0) : x(_x), y(_y) {
-    }
-    void input() {
-        scanf("%lf%lf", &x, &y);
-    }
-    void output() {
-        printf("%.3f %.3f\n", x, y);
-    }
-    double len() const {
-        return sqrt(x * x + y * y);
-    }
-    
+    point (double _x = 0, double _y = 0) : x(_x), y(_y) { }
+    void input() { scanf("%lf%lf", &x, &y); }
+    void output() { printf("%.3f %.3f\n", x, y); }
+    double len() const { return sqrt(x * x + y * y); }
     point trunc (double l) const {
         double r = l / len();
         return point(x * r, y * r);
     }
-    point rotate_left() const {
-        return point(-y, x);
-    }
-    point rotate_right() const {
-        return point(y, -x);
-    }
+    point rotate_left() const { return point(-y, x); }
+    point rotate_right() const { return point(y, -x); }
     point rotate_left(double s) const {
         double c = sqrt(1 - s * s);
         return point(x * c - y * s, y * c + x * s);
@@ -40,24 +28,13 @@ struct point {
         double l = len();
         return point(x / l, y / l);
     }
-    bool operator == (const point &p) const {
-        return sgn(x - p.x) == 0 && sgn(y - p.y) == 0;
-    }
-    double operator * (const point &p) const {
-        return (x * p.y) - (y * p.x);
-    }
-    double operator ^ (const point &p) const {
-        return (x * p.x) + (y * p.y);
-    }
-    point operator + (const point &p) const {
-        return point(x + p.x, y + p.y);
-    }
-    point operator - (const point &p) const {
-        return point(x - p.x, y - p.y);
-    }
-    point operator / (double mul) const {
-        return point(x / mul, y / mul);
-    }
+    bool operator == (const point &p) const { return sgn(x - p.x) == 0 && sgn(y - p.y) == 0; }
+    double operator * (const point &p) const { return (x * p.y) - (y * p.x); }
+    double operator ^ (const point &p) const { return (x * p.x) + (y * p.y); }
+    point operator + (const point &p) const { return point(x + p.x, y + p.y); }
+    point operator - (const point &p) const { return point(x - p.x, y - p.y); }
+    point operator / (double mul) const { return point(x / mul, y / mul); }
+    point operator * (double mul) const { return point(x * mul, y * mul); }
 };
 
 double getDis(point s, point e, point p) { //点p与直线(s,e)的距离

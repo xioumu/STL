@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>E:\Dropbox\acm2013\m模板\test\hdu3662.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Error { color: #ffffff; background-color: #ff0000; }
+.Special { color: #6a5acd; }
+.Type { color: #2e8b57; font-weight: bold; }
+.Statement { color: #804040; font-weight: bold; }
+.Constant { color: #ff00ff; }
+.PreProc { color: #a020f0; }
+.Comment { color: #0000ff; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr">  1 </span><span class="Comment">/*</span>
+<span class="lnr">  2 </span><span class="Comment"> * Author:  xioumu</span>
+<span class="lnr">  3 </span><span class="Comment"> * Created Time:  2013/10/17 13:49:12</span>
+<span class="lnr">  4 </span><span class="Comment"> * File Name: hdu3662.cpp</span>
+<span class="lnr">  5 </span><span class="Comment"> * solve: hdu3662.cpp</span>
+<span class="lnr">  6 </span><span class="Comment"> </span><span class="Comment">*/</span>
+<span class="lnr">  7 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstdio&gt;</span>
+<span class="lnr">  8 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstring&gt;</span>
+<span class="lnr">  9 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstdlib&gt;</span>
+<span class="lnr"> 10 </span><span class="PreProc">#include</span><span class="Constant">&lt;cmath&gt;</span>
+<span class="lnr"> 11 </span><span class="PreProc">#include</span><span class="Constant">&lt;algorithm&gt;</span>
+<span class="lnr"> 12 </span><span class="PreProc">#include</span><span class="Constant">&lt;string&gt;</span>
+<span class="lnr"> 13 </span><span class="PreProc">#include</span><span class="Constant">&lt;map&gt;</span>
+<span class="lnr"> 14 </span><span class="PreProc">#include</span><span class="Constant">&lt;set&gt;</span>
+<span class="lnr"> 15 </span><span class="PreProc">#include</span><span class="Constant">&lt;iostream&gt;</span>
+<span class="lnr"> 16 </span><span class="PreProc">#include</span><span class="Constant">&lt;vector&gt;</span>
+<span class="lnr"> 17 </span><span class="PreProc">#include</span><span class="Constant">&lt;queue&gt;</span>
+<span class="lnr"> 18 </span>
+<span class="lnr"> 19 </span><span class="Statement">using</span> <span class="Type">namespace</span> std;
+<span class="lnr"> 20 </span><span class="PreProc">#define sz(v) ((</span><span class="Type">int</span><span class="PreProc">)(v).size())</span>
+<span class="lnr"> 21 </span><span class="PreProc">#define rep(i, n) </span><span class="Statement">for</span><span class="PreProc"> (</span><span class="Type">int</span><span class="PreProc"> i = </span><span class="Constant">0</span><span class="PreProc">; i &lt; (n); ++i)</span>
+<span class="lnr"> 22 </span><span class="PreProc">#define repf(i, a, b) </span><span class="Statement">for</span><span class="PreProc"> (</span><span class="Type">int</span><span class="PreProc"> i = (a); i &lt;= (b); ++i)</span>
+<span class="lnr"> 23 </span><span class="PreProc">#define repd(i, a, b) </span><span class="Statement">for</span><span class="PreProc"> (</span><span class="Type">int</span><span class="PreProc"> i = (a); i &gt;= (b); --i)</span>
+<span class="lnr"> 24 </span><span class="PreProc">#define clr(x) memset(x,</span><span class="Constant">0</span><span class="PreProc">,</span><span class="Statement">sizeof</span><span class="PreProc">(x))</span>
+<span class="lnr"> 25 </span><span class="PreProc">#define clrs( x , y ) memset(x,y,</span><span class="Statement">sizeof</span><span class="PreProc">(x))</span>
+<span class="lnr"> 26 </span><span class="PreProc">#define out(x) printf(#x</span><span class="Constant">&quot; </span><span class="Special">%d</span><span class="Special">\n</span><span class="Constant">&quot;</span><span class="PreProc">, x)</span>
+<span class="lnr"> 27 </span><span class="PreProc">#define sqr(x) ((x) * (x))</span>
+<span class="lnr"> 28 </span><span class="Type">typedef</span> <span class="Type">long</span> <span class="Type">long</span> lint;
+<span class="lnr"> 29 </span>
+<span class="lnr"> 30 </span><span class="Type">const</span> <span class="Type">int</span> maxint = -<span class="Constant">1u</span>&gt;&gt;<span class="Constant">1</span>;
+<span class="lnr"> 31 </span><span class="Type">const</span> <span class="Type">double</span> eps = <span class="Constant">1e-8</span>;
+<span class="lnr"> 32 </span><span class="Type">const</span> <span class="Type">int</span> maxn = <span class="Constant">300</span> + <span class="Constant">10</span>;
+<span class="lnr"> 33 </span>
+<span class="lnr"> 34 </span><span class="Type">int</span> sgn(<span class="Type">const</span> <span class="Type">double</span> &amp;x) {  <span class="Statement">return</span> (x &gt; eps) - (x &lt; -eps); }
+<span class="lnr"> 35 </span><span class="Type">struct</span> Point3{
+<span class="lnr"> 36 </span>    <span class="Type">double</span> x, y, z;
+<span class="lnr"> 37 </span>    Point3(<span class="Type">double</span> x = <span class="Constant">0</span>, <span class="Type">double</span> y = <span class="Constant">0</span>, <span class="Type">double</span> z = <span class="Constant">0</span>):x(x), y(y), z(z) { }
+<span class="lnr"> 38 </span>    <span class="Type">void</span> input() {
+<span class="lnr"> 39 </span>        scanf(<span class="Constant">&quot;</span><span class="Special">%lf%lf%lf</span><span class="Constant">&quot;</span>, &amp;x, &amp;y, &amp;z);
+<span class="lnr"> 40 </span>    }
+<span class="lnr"> 41 </span>    <span class="Type">void</span> output() {
+<span class="lnr"> 42 </span>        printf(<span class="Constant">&quot;</span><span class="Special">%f</span><span class="Constant"> </span><span class="Special">%f</span><span class="Constant"> </span><span class="Special">%f</span><span class="Special">\n</span><span class="Constant">&quot;</span>, x, y, z);
+<span class="lnr"> 43 </span>    }
+<span class="lnr"> 44 </span>    <span class="Type">bool</span> <span class="Statement">operator</span> &lt; (Point3 p) <span class="Type">const</span> {
+<span class="lnr"> 45 </span>        <span class="Statement">if</span> (sgn(x - p.x) != <span class="Constant">0</span>) <span class="Statement">return</span> x &lt; p.x;
+<span class="lnr"> 46 </span>        <span class="Statement">else</span> <span class="Statement">if</span> (sgn(y - p.y) != <span class="Constant">0</span>) <span class="Statement">return</span> y &lt; p.y;
+<span class="lnr"> 47 </span>        <span class="Statement">else</span> <span class="Statement">return</span> z &lt; p.z;
+<span class="lnr"> 48 </span>    }
+<span class="lnr"> 49 </span>    <span class="Type">bool</span> <span class="Statement">operator</span> == (Point3 p) <span class="Type">const</span> {
+<span class="lnr"> 50 </span>        <span class="Statement">return</span> sgn(x - p.x) == <span class="Constant">0</span> &amp;&amp; sgn(y - p.y) == <span class="Constant">0</span> &amp;&amp; sgn(z - p.z) == <span class="Constant">0</span>;
+<span class="lnr"> 51 </span>    }
+<span class="lnr"> 52 </span>};
+<span class="lnr"> 53 </span><span class="Type">typedef</span> Point3 Vector3;
+<span class="lnr"> 54 </span>
+<span class="lnr"> 55 </span>Point3 <span class="Statement">operator</span> + (Vector3 A, Vector3 B) {
+<span class="lnr"> 56 </span>    <span class="Statement">return</span> Vector3(A.x + B.x, A.y + B.y, A.z + B.z);
+<span class="lnr"> 57 </span>}
+<span class="lnr"> 58 </span>Point3 <span class="Statement">operator</span> - (Point3 A, Point3 B) {
+<span class="lnr"> 59 </span>    <span class="Statement">return</span> Vector3(A.x - B.x, A.y - B.y, A.z - B.z);
+<span class="lnr"> 60 </span>}
+<span class="lnr"> 61 </span><span class="Type">double</span> Dot(Vector3 A, Vector3 B) {<span class="Statement">return</span> A.x * B.x + A.y * B.y + A.z * B.z;}
+<span class="lnr"> 62 </span><span class="Type">double</span> Length(Vector3 A) { <span class="Statement">return</span> sqrt(Dot(A, A)); }
+<span class="lnr"> 63 </span><span class="Type">double</span> Angle(Vector3 A, Vector3 B) {<span class="Statement">return</span> acos(Dot(A, B) / Length(A) / Length(B));}
+<span class="lnr"> 64 </span>Vector3 Cross(Vector3 A, Vector3 B) {
+<span class="lnr"> 65 </span>    <span class="Statement">return</span> Vector3(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x);
+<span class="lnr"> 66 </span>}
+<span class="lnr"> 67 </span>
+<span class="lnr"> 68 </span><span class="Type">struct</span> Face {
+<span class="lnr"> 69 </span>    <span class="Type">int</span> v[<span class="Constant">3</span>];
+<span class="lnr"> 70 </span>    Vector3 normal(Point3 *P) <span class="Type">const</span> {
+<span class="lnr"> 71 </span>        <span class="Statement">return</span> Cross(P[v[<span class="Constant">1</span>]] - P[v[<span class="Constant">0</span>]], P[v[<span class="Constant">2</span>]] - P[v[<span class="Constant">0</span>]]);
+<span class="lnr"> 72 </span>    }
+<span class="lnr"> 73 </span>    <span class="Type">int</span> cansee(Point3 *P, <span class="Type">int</span> i) <span class="Type">const</span> {
+<span class="lnr"> 74 </span>        <span class="Statement">return</span> Dot(P[i] - P[v[<span class="Constant">0</span>]], normal(P)) &gt; <span class="Constant">0</span> ? <span class="Constant">1</span> : <span class="Constant">0</span>;
+<span class="lnr"> 75 </span>    }
+<span class="lnr"> 76 </span>};
+<span class="lnr"> 77 </span>
+<span class="lnr"> 78 </span><span class="Type">int</span> vis[maxn][maxn];
+<span class="lnr"> 79 </span>
+<span class="lnr"> 80 </span>vector&lt;Face&gt; CH3D(Point3 *P, <span class="Type">int</span> n) {
+<span class="lnr"> 81 </span>    vector&lt;Face&gt; cur;
+<span class="lnr"> 82 </span>    cur.push_back((Face)<span class="Error">{{</span><span class="Constant">0</span>, <span class="Constant">1</span>, <span class="Constant">2</span><span class="Error">}}</span>);
+<span class="lnr"> 83 </span>    cur.push_back((Face)<span class="Error">{{</span><span class="Constant">2</span>, <span class="Constant">1</span>, <span class="Constant">0</span><span class="Error">}}</span>);
+<span class="lnr"> 84 </span>    <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">3</span>; i &lt; n; i++) {
+<span class="lnr"> 85 </span>        vector&lt;Face&gt; next;
+<span class="lnr"> 86 </span>        <span class="Statement">for</span> (<span class="Type">int</span> j = <span class="Constant">0</span>; j &lt; cur.size(); j++) {
+<span class="lnr"> 87 </span>            Face &amp;f = cur[j];
+<span class="lnr"> 88 </span>            <span class="Type">int</span> res = f.cansee(P, i);
+<span class="lnr"> 89 </span>            <span class="Statement">if</span> (!res) next.push_back(f);
+<span class="lnr"> 90 </span>            <span class="Statement">for</span> (<span class="Type">int</span> k = <span class="Constant">0</span>; k &lt; <span class="Constant">3</span>; k++)
+<span class="lnr"> 91 </span>                vis[f.v[k]][f.v[(k + <span class="Constant">1</span>) % <span class="Constant">3</span>]] = res;
+<span class="lnr"> 92 </span>        }
+<span class="lnr"> 93 </span>        <span class="Statement">for</span> (<span class="Type">int</span> j = <span class="Constant">0</span>; j &lt; cur.size(); j++)
+<span class="lnr"> 94 </span>            <span class="Statement">for</span> (<span class="Type">int</span> k = <span class="Constant">0</span>; k &lt; <span class="Constant">3</span>; k++) {
+<span class="lnr"> 95 </span>                <span class="Type">int</span> a = cur[j].v[k], b = cur[j].v[(k + <span class="Constant">1</span>) % <span class="Constant">3</span>];
+<span class="lnr"> 96 </span>                <span class="Statement">if</span> (vis[a][b] != vis[b][a] &amp;&amp; vis[a][b])
+<span class="lnr"> 97 </span>                    next.push_back((Face)<span class="Error">{{</span>a, b, i<span class="Error">}}</span>);
+<span class="lnr"> 98 </span>            }
+<span class="lnr"> 99 </span>        cur = next;
+<span class="lnr">100 </span>    }
+<span class="lnr">101 </span>    <span class="Statement">return</span> cur;
+<span class="lnr">102 </span>}
+<span class="lnr">103 </span>
+<span class="lnr">104 </span><span class="Type">double</span> rand01() { <span class="Statement">return</span> rand() / (<span class="Type">double</span>)<span class="Constant">RAND_MAX</span>;}
+<span class="lnr">105 </span><span class="Type">double</span> randeps() {<span class="Statement">return</span> (rand01() - <span class="Constant">0.5</span>) * eps;}
+<span class="lnr">106 </span>Point3 addNoise(Point3 p) {
+<span class="lnr">107 </span>    <span class="Statement">return</span> Point3(p.x + randeps(), p.y + randeps(), p.z + randeps());
+<span class="lnr">108 </span>}
+<span class="lnr">109 </span>
+<span class="lnr">110 </span><span class="Type">int</span> n;
+<span class="lnr">111 </span>Point3 pp[maxn], p2[maxn], p0[maxn];
+<span class="lnr">112 </span>vector&lt;Face&gt; ff;
+<span class="lnr">113 </span>
+<span class="lnr">114 </span><span class="Type">int</span> main() {
+<span class="lnr">115 </span>    <span class="Statement">while</span> (scanf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Constant">&quot;</span>, &amp;n) == <span class="Constant">1</span>) {
+<span class="lnr">116 </span>        <span class="Type">int</span> m = <span class="Constant">0</span>;
+<span class="lnr">117 </span>        rep (i, n) {
+<span class="lnr">118 </span>            pp[i].input();
+<span class="lnr">119 </span>        }
+<span class="lnr">120 </span>        sort(pp, pp + n);
+<span class="lnr">121 </span>        rep (i, n) {
+<span class="lnr">122 </span>            <span class="Statement">if</span> (i == <span class="Constant">0</span> || !(pp[i] == pp[i - <span class="Constant">1</span>]))
+<span class="lnr">123 </span>                p0[m++] = pp[i];
+<span class="lnr">124 </span>        }
+<span class="lnr">125 </span>        n = m;
+<span class="lnr">126 </span>        rep (i, n) p2[i] = addNoise(p0[i]);
+<span class="lnr">127 </span>        ff = CH3D(p2, n);
+<span class="lnr">128 </span>        printf(<span class="Constant">&quot;</span><span class="Special">%d</span><span class="Special">\n</span><span class="Constant">&quot;</span>, sz(ff));
+<span class="lnr">129 </span>        rep (i, sz(ff)) {
+<span class="lnr">130 </span>            rep (j, <span class="Constant">3</span>)
+<span class="lnr">131 </span>                p0[ff[i].v[j]].output();
+<span class="lnr">132 </span>            puts(<span class="Constant">&quot;++++++++++++&quot;</span>);
+<span class="lnr">133 </span>        }
+<span class="lnr">134 </span>    }
+<span class="lnr">135 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">136 </span>}
+</pre>
+</body>
+</html>

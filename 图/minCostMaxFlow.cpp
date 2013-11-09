@@ -1,8 +1,8 @@
 struct Graph {
     struct Adj {
         int v, c, w, b;
-        Adj(int _v, int _c, int _w, int _b):v(_v), c(_c), w(_w), b(_b) {
-        }
+        Adj(int _v, int _c, int _w, int _b)
+            :v(_v), c(_c), w(_w), b(_b) {}
     }*st[maxn];
     vector<Adj> adj[maxn];
     int n;

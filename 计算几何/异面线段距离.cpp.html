@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>E:\Dropbox\acm2013\m模板\计算几何\异面线段距离.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Type { color: #2e8b57; font-weight: bold; }
+.Constant { color: #ff00ff; }
+.Statement { color: #804040; font-weight: bold; }
+.Comment { color: #0000ff; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Comment">//返回直线距离的平方,返回一个分数。 node是分数类</span>
+<span class="lnr"> 2 </span>node gao3(point p, point a, point b) { <span class="Comment">//点到线段的距离</span>
+<span class="lnr"> 3 </span>    <span class="Statement">if</span> (p == a || p == b) <span class="Statement">return</span> node(<span class="Constant">0</span>);
+<span class="lnr"> 4 </span>    <span class="Statement">if</span> (a == b) <span class="Statement">return</span> node((p - a) ^ (p - a));
+<span class="lnr"> 5 </span>    point v1 = b - a, v2 = p - a, v3 = p - b;
+<span class="lnr"> 6 </span>    <span class="Statement">if</span> ((v1 ^ v2) &lt; <span class="Constant">0</span>) {
+<span class="lnr"> 7 </span>        <span class="Statement">return</span> node(v2 ^ v2);
+<span class="lnr"> 8 </span>    }
+<span class="lnr"> 9 </span>    <span class="Statement">else</span> <span class="Statement">if</span> ((v1 ^ v3) &gt; <span class="Constant">0</span>) {
+<span class="lnr">10 </span>        <span class="Statement">return</span> node(v3 ^ v3);
+<span class="lnr">11 </span>    }
+<span class="lnr">12 </span>    <span class="Statement">else</span> {
+<span class="lnr">13 </span>        <span class="Statement">return</span> node((v1 * v2) ^ (v1 * v2)) / node(v1 ^ v1);
+<span class="lnr">14 </span>    }
+<span class="lnr">15 </span>}
+<span class="lnr">16 </span>node gao2(point a, point b, point c, point d) { <span class="Comment">//当线段之间没有垂线的距离</span>
+<span class="lnr">17 </span>    node res = gao3(c, a, b);
+<span class="lnr">18 </span>    res = min(res, gao3(d, a, b));
+<span class="lnr">19 </span>    res = min(res, gao3(a, c, d));
+<span class="lnr">20 </span>    res = min(res, gao3(b, c, d));
+<span class="lnr">21 </span>    <span class="Statement">return</span> res;
+<span class="lnr">22 </span>}
+<span class="lnr">23 </span>
+<span class="lnr">24 </span><span class="Type">bool</span> ok(node x) {
+<span class="lnr">25 </span>    <span class="Statement">if</span> (x.zi * x.mu &lt; <span class="Constant">0</span>) <span class="Statement">return</span> <span class="Constant">false</span>;
+<span class="lnr">26 </span>    <span class="Statement">if</span> (x.zi &lt; <span class="Constant">0</span>)
+<span class="lnr">27 </span>        x.zi *= -<span class="Constant">1</span>, x.mu *= -<span class="Constant">1</span>;
+<span class="lnr">28 </span>    <span class="Statement">return</span> x.zi &lt;= x.mu;
+<span class="lnr">29 </span>}
+<span class="lnr">30 </span>
+<span class="lnr">31 </span>node gao(point a, point b, point l, point r) { <span class="Comment">//线段与线段之间的距离</span>
+<span class="lnr">32 </span>    lint x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3;
+<span class="lnr">33 </span>    x0 = a.x, y0 = a.y, z0 = a.z;
+<span class="lnr">34 </span>    x1 = b.x, y1 = b.y, z1 = b.z;
+<span class="lnr">35 </span>    x2 = l.x, y2 = l.y, z2 = l.z;
+<span class="lnr">36 </span>    x3 = r.x, y3 = r.y, z3 = r.z;
+<span class="lnr">37 </span>    lint a1 = x1 - x0, a2 = x2 - x3, a3 = x0 - x2,
+<span class="lnr">38 </span>         a4 = y1 - y0, a5 = y2 - y3, a6 = y0 - y2,
+<span class="lnr">39 </span>         a7 = z1 - z0, a8 = z2 - z3, a9 = z0 - z2;
+<span class="lnr">40 </span>    lint  A = a1 * a1 + a4 * a4 + a7 * a7,
+<span class="lnr">41 </span>         B = a2 * a2 + a5 * a5 + a8 * a8,
+<span class="lnr">42 </span>         C = <span class="Constant">2</span> * (a1 * a2 + a4 * a5 + a7 * a8),
+<span class="lnr">43 </span>         D = <span class="Constant">2</span> * (a1 * a3 + a4 * a6 + a7 * a9),
+<span class="lnr">44 </span>         E = <span class="Constant">2</span> * (a2 * a3 + a5 * a6 + a8 * a9),
+<span class="lnr">45 </span>         F = a3 * a3 + a6 * a6 + a9 * a9;
+<span class="lnr">46 </span>    <span class="Statement">if</span> ((a1 * a5 == a2 * a4 &amp;&amp; a1 * a8 == a2 * a7 &amp;&amp; a4 * a8 == a5 * a7))
+<span class="lnr">47 </span>        <span class="Statement">return</span> gao2(a, b, l, r);
+<span class="lnr">48 </span>
+<span class="lnr">49 </span>    lint Y = C * D - <span class="Constant">2</span> * A * E,
+<span class="lnr">50 </span>         X = C * E - <span class="Constant">2</span> * B * D;
+<span class="lnr">51 </span>    <span class="Statement">if</span> (!ok(node(Y, <span class="Constant">4</span> * A * B - C * C)) || !ok(node(X, <span class="Constant">4</span> * A * B - C * C)))
+<span class="lnr">52 </span>        <span class="Statement">return</span> gao2(a, b, l, r);
+<span class="lnr">53 </span>    lint S = A * X * X + B * Y * Y + C * X * Y + D * X * (<span class="Constant">4</span> * A * B - C * C) + E * Y * (<span class="Constant">4</span> * A * B - C * C) + F * (<span class="Constant">4</span> * A * B - C * C) * (<span class="Constant">4</span> * A * B - C * C);
+<span class="lnr">54 </span>    <span class="Statement">return</span> node(S, (<span class="Constant">4</span> * A * B - C * C) * (<span class="Constant">4</span> * A * B - C * C));
+<span class="lnr">55 </span>}
+<span class="lnr">56 </span>
+</pre>
+</body>
+</html>

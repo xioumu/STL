@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=GBK">
-<title>D:\code\acm\模板\题\ural1297(后缀树_最长回文子串).cpp.html</title>
+<title>E:\Dropbox\acm2013\m模板\数据结构\ural1297(后缀树_最长回文子串).cpp.html</title>
 <meta name="Generator" content="Vim/7.3">
 <meta name="plugin-version" content="vim7.3_v6">
 <meta name="syntax" content="cpp">
@@ -12,121 +12,104 @@
 pre { font-family: monospace; color: #000000; background-color: #ffffff; }
 body { font-family: monospace; color: #000000; background-color: #ffffff; }
 .lnr { color: #804040; }
-.Special { color: #ff00ff; }
-.Type { color: #0000ff; }
-.Statement { color: #804040; }
+.Special { color: #6a5acd; }
+.Comment { color: #0000ff; }
+.Statement { color: #804040; font-weight: bold; }
 .Constant { color: #ff00ff; }
-.PreProc { color: #a020f0; }
-.Comment { color: #ff0000; }
+.Type { color: #2e8b57; font-weight: bold; }
 -->
 </style>
 </head>
 <body>
 <pre>
-<span class="lnr">  1 </span><span class="Comment">/*</span>
-<span class="lnr">  2 </span><span class="Comment"> * Author:  xioumu</span>
-<span class="lnr">  3 </span><span class="Comment"> * Created Time:  2012-3-16 1:00:23</span>
-<span class="lnr">  4 </span><span class="Comment"> * File Name: ural1297.cpp</span>
-<span class="lnr">  5 </span><span class="Comment"> * solve: ural1297.cpp</span>
-<span class="lnr">  6 </span><span class="Comment"> </span><span class="Comment">*/</span>
-<span class="lnr">  7 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstdio&gt;</span>
-<span class="lnr">  8 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstring&gt;</span>
-<span class="lnr">  9 </span><span class="PreProc">#include</span><span class="Constant">&lt;cstdlib&gt;</span>
-<span class="lnr"> 10 </span><span class="PreProc">#include</span><span class="Constant">&lt;cmath&gt;</span>
-<span class="lnr"> 11 </span><span class="PreProc">#include</span><span class="Constant">&lt;algorithm&gt;</span>
-<span class="lnr"> 12 </span><span class="PreProc">#include</span><span class="Constant">&lt;string&gt;</span>
-<span class="lnr"> 13 </span><span class="Statement">using</span> <span class="Type">namespace</span> std;
-<span class="lnr"> 14 </span><span class="PreProc">#define inf </span><span class="Constant">1e-8</span>
-<span class="lnr"> 15 </span><span class="PreProc">#define MAXN </span><span class="Constant">2007</span>
-<span class="lnr"> 16 </span><span class="Type">typedef</span> <span class="Type">long</span> <span class="Type">long</span> int64;
-<span class="lnr"> 17 </span><span class="Type">int</span> a[MAXN], height[MAXN], myrank[MAXN], sa[MAXN];
-<span class="lnr"> 18 </span><span class="Type">int</span> wa[MAXN], wb[MAXN], wv[MAXN], wws[MAXN];
-<span class="lnr"> 19 </span><span class="Type">int</span> rmq[<span class="Constant">100</span>][MAXN];
-<span class="lnr"> 20 </span><span class="Type">int</span> n;
-<span class="lnr"> 21 </span><span class="Type">bool</span> cmp(<span class="Type">int</span> *wb, <span class="Type">int</span> a, <span class="Type">int</span> b, <span class="Type">int</span> l, <span class="Type">int</span> n){
-<span class="lnr"> 22 </span>    <span class="Type">int</span> r,w;
-<span class="lnr"> 23 </span>    r = a + l &gt;= n ? <span class="Constant">0</span> : wb[a+l];
-<span class="lnr"> 24 </span>    w = b + l &gt;= n ? <span class="Constant">0</span> : wb[b+l];
-<span class="lnr"> 25 </span>    <span class="Statement">return</span> wb[a] == wb[b] &amp;&amp; r == w;
-<span class="lnr"> 26 </span>}
-<span class="lnr"> 27 </span><span class="Type">void</span> getsa(<span class="Type">int</span> *a, <span class="Type">int</span> n, <span class="Type">int</span> m, <span class="Type">int</span> *sa){  <span class="Comment">//sa : 1 ~ n</span>
-<span class="lnr"> 28 </span>    <span class="Type">int</span> i,j,k,r,w,p;
-<span class="lnr"> 29 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=m; i++)  wws[i] = <span class="Constant">0</span>;
-<span class="lnr"> 30 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  wws[ wa[i] = a[i] ]++;
-<span class="lnr"> 31 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>; i&lt;=m; i++) wws[i] += wws[i-<span class="Constant">1</span>];
-<span class="lnr"> 32 </span>    <span class="Statement">for</span>(i=n-<span class="Constant">1</span>; i&gt;=<span class="Constant">0</span>; i--)   sa[ --wws[ wa[i] ] ] = i;
-<span class="lnr"> 33 </span>    <span class="Statement">for</span>(j=<span class="Constant">1</span>,p=<span class="Constant">1</span>; j&lt;n&amp;&amp;p&lt;n; j*=<span class="Constant">2</span>,m=p){        <span class="Comment">//特别注意要写m=p</span>
-<span class="lnr"> 34 </span>        <span class="Statement">for</span>(i=n-j,p=<span class="Constant">0</span>; i&lt;n; i++)  wb[p++] = i;
-<span class="lnr"> 35 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  <span class="Statement">if</span>(sa[i] &gt;= j)  wb[p++] = sa[i] - j;
-<span class="lnr"> 36 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=m; i++)   wws[i] = <span class="Constant">0</span>;
-<span class="lnr"> 37 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  wv[i] = wa[ wb[i] ];
-<span class="lnr"> 38 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  wws[ wv[i] ]++;
-<span class="lnr"> 39 </span>        <span class="Statement">for</span>(i=<span class="Constant">1</span>; i&lt;=m; i++)  wws[i] += wws[i-<span class="Constant">1</span>];
-<span class="lnr"> 40 </span>        <span class="Statement">for</span>(i=n-<span class="Constant">1</span>; i&gt;=<span class="Constant">0</span>; i--)   sa[ --wws[ wv[i] ] ] = wb[i];
-<span class="lnr"> 41 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++) wb[i] = wa[i];
-<span class="lnr"> 42 </span>        <span class="Statement">for</span>(i=<span class="Constant">1</span>,p=<span class="Constant">1</span>,wa[ sa[<span class="Constant">0</span>] ] = <span class="Constant">0</span>; i&lt;n; i++)
-<span class="lnr"> 43 </span>            wa[ sa[i] ] = cmp(wb, sa[i], sa[i-<span class="Constant">1</span>], j, n) ? p-<span class="Constant">1</span> : p++;
-<span class="lnr"> 44 </span>    }
-<span class="lnr"> 45 </span>}
-<span class="lnr"> 46 </span><span class="Type">void</span> getheight(<span class="Type">int</span> *a, <span class="Type">int</span> *sa, <span class="Type">int</span> n, <span class="Type">int</span> *height){
-<span class="lnr"> 47 </span>    <span class="Type">int</span> i,j,k,r,w;
-<span class="lnr"> 48 </span>    k = <span class="Constant">0</span>;
-<span class="lnr"> 49 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=n; i++)  myrank[ sa[i] ] = i;
-<span class="lnr"> 50 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; height[ myrank[i++] ] = k)
-<span class="lnr"> 51 </span>        <span class="Statement">for</span>(k ? k-- : <span class="Constant">0</span>, j = sa[ myrank[i] - <span class="Constant">1</span>]; a[i+k] == a[j+k]; k++);
-<span class="lnr"> 52 </span>}
-<span class="lnr"> 53 </span><span class="Type">void</span> getrmq(<span class="Type">int</span> *height, <span class="Type">int</span> n, <span class="Type">int</span> rmq[<span class="Constant">100</span>][MAXN]){
-<span class="lnr"> 54 </span>    <span class="Type">int</span> i,j,k,r,m;
-<span class="lnr"> 55 </span>    m = (<span class="Type">double</span>)log((<span class="Type">double</span>)n+<span class="Constant">1</span>) / (<span class="Type">double</span>)log(<span class="Constant">2.0</span>);
-<span class="lnr"> 56 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=m; i++)
-<span class="lnr"> 57 </span>        <span class="Statement">for</span>(j=<span class="Constant">0</span>; j&lt;=n; j++)
-<span class="lnr"> 58 </span>            rmq[i][j] = <span class="Constant">200000000</span>;
-<span class="lnr"> 59 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=n; i++){
-<span class="lnr"> 60 </span>        rmq[<span class="Constant">0</span>][i] = height[i];
-<span class="lnr"> 61 </span>    }
-<span class="lnr"> 62 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>; i&lt;=m; i++)
-<span class="lnr"> 63 </span>        <span class="Statement">for</span>(j=<span class="Constant">0</span>; j&lt;=n - (<span class="Constant">1</span>&lt;&lt;(i-<span class="Constant">1</span>)) + <span class="Constant">1</span>; j++)
-<span class="lnr"> 64 </span>            rmq[i][j] = min(rmq[i-<span class="Constant">1</span>][j], rmq[i-<span class="Constant">1</span>][j + ( <span class="Constant">1</span> &lt;&lt; (i-<span class="Constant">1</span>) )]);
-<span class="lnr"> 65 </span>}
-<span class="lnr"> 66 </span><span class="Type">int</span> find(<span class="Type">int</span> rmq[<span class="Constant">100</span>][MAXN], <span class="Type">int</span> l, <span class="Type">int</span> r){
-<span class="lnr"> 67 </span>    <span class="Statement">if</span>(l &gt; r)  swap(l, r);
-<span class="lnr"> 68 </span>    l++;
-<span class="lnr"> 69 </span>    <span class="Type">int</span> m = (<span class="Type">double</span>)log((<span class="Type">double</span>)r-l+<span class="Constant">1</span>)/(<span class="Type">double</span>)log(<span class="Constant">2.0</span>);
-<span class="lnr"> 70 </span>    <span class="Statement">return</span> min(rmq[m][l], rmq[m][r - (<span class="Constant">1</span>&lt;&lt;m) + <span class="Constant">1</span>]);
-<span class="lnr"> 71 </span>}
-<span class="lnr"> 72 </span><span class="Type">int</span> main(){
-<span class="lnr"> 73 </span>    <span class="Type">char</span> s[MAXN];
-<span class="lnr"> 74 </span>    <span class="Type">int</span> i,j,k;
-<span class="lnr"> 75 </span>    <span class="Statement">while</span>(scanf(<span class="Constant">&quot; </span><span class="Special">%s</span><span class="Constant">&quot;</span>,s) != <span class="Constant">EOF</span>){
-<span class="lnr"> 76 </span>        memset(a,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(a));
-<span class="lnr"> 77 </span>        n = strlen(s);
-<span class="lnr"> 78 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  a[i] = s[i];
-<span class="lnr"> 79 </span>        a[n] = <span class="Constant">200</span>;
-<span class="lnr"> 80 </span>        <span class="Statement">for</span>(i=n+<span class="Constant">1</span>; i&lt;=n+n; i++)  a[i] = s[n + n - i];
-<span class="lnr"> 81 </span>        a[n+n+<span class="Constant">1</span>] = <span class="Constant">0</span>;
-<span class="lnr"> 82 </span>        getsa(a, n+n+<span class="Constant">2</span>, <span class="Constant">300</span>, sa);
-<span class="lnr"> 83 </span>        getheight(a, sa, n+n+<span class="Constant">1</span>, height);
-<span class="lnr"> 84 </span>        getrmq(height, n+n+<span class="Constant">1</span>, rmq);
-<span class="lnr"> 85 </span>        <span class="Type">int</span> ans = -<span class="Constant">1</span>, ansb;
-<span class="lnr"> 86 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++){
-<span class="lnr"> 87 </span>            k = find(rmq, myrank[i], myrank[n + n - i]);
-<span class="lnr"> 88 </span>            <span class="Statement">if</span>(ans &lt; <span class="Constant">2</span>*k - <span class="Constant">1</span>){
-<span class="lnr"> 89 </span>                ans = <span class="Constant">2</span> * k - <span class="Constant">1</span>;
-<span class="lnr"> 90 </span>                ansb = i - k + <span class="Constant">1</span>;
-<span class="lnr"> 91 </span>            }
-<span class="lnr"> 92 </span>            k = find(rmq, myrank[i], myrank[n + n - i - <span class="Constant">1</span>]);
-<span class="lnr"> 93 </span>            <span class="Statement">if</span>(ans &lt; (k-<span class="Constant">1</span>) * <span class="Constant">2</span> ){
-<span class="lnr"> 94 </span>                ans = (k-<span class="Constant">1</span>) * <span class="Constant">2</span>;
-<span class="lnr"> 95 </span>                ansb = i - (k-<span class="Constant">2</span>);
-<span class="lnr"> 96 </span>            printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
-<span class="lnr"> 97 </span>            }
-<span class="lnr"> 98 </span>        }
-<span class="lnr"> 99 </span>        <span class="Statement">for</span>(i=ansb; i&lt;ansb + ans; i++)
-<span class="lnr">100 </span>            printf(<span class="Constant">&quot;</span><span class="Special">%c</span><span class="Constant">&quot;</span>,a[i]);
-<span class="lnr">101 </span>        printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
-<span class="lnr">102 </span>    }
-<span class="lnr">103 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
-<span class="lnr">104 </span>}
+<span class="lnr"> 1 </span><span class="Type">int</span> a[MAXN], height[MAXN], myrank[MAXN], sa[MAXN];
+<span class="lnr"> 2 </span><span class="Type">int</span> wa[MAXN], wb[MAXN], wv[MAXN], wws[MAXN];
+<span class="lnr"> 3 </span><span class="Type">int</span> rmq[<span class="Constant">100</span>][MAXN];
+<span class="lnr"> 4 </span><span class="Type">int</span> n;
+<span class="lnr"> 5 </span><span class="Type">bool</span> cmp(<span class="Type">int</span> *wb, <span class="Type">int</span> a, <span class="Type">int</span> b, <span class="Type">int</span> l, <span class="Type">int</span> n){
+<span class="lnr"> 6 </span>    <span class="Type">int</span> r,w;
+<span class="lnr"> 7 </span>    r = a + l &gt;= n ? <span class="Constant">0</span> : wb[a+l];
+<span class="lnr"> 8 </span>    w = b + l &gt;= n ? <span class="Constant">0</span> : wb[b+l];
+<span class="lnr"> 9 </span>    <span class="Statement">return</span> wb[a] == wb[b] &amp;&amp; r == w;
+<span class="lnr">10 </span>}
+<span class="lnr">11 </span><span class="Type">void</span> getsa(<span class="Type">int</span> *a, <span class="Type">int</span> n, <span class="Type">int</span> m, <span class="Type">int</span> *sa){  <span class="Comment">//sa : 1 ~ n</span>
+<span class="lnr">12 </span>    <span class="Type">int</span> i,j,k,r,w,p;
+<span class="lnr">13 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=m; i++)  wws[i] = <span class="Constant">0</span>;
+<span class="lnr">14 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  wws[ wa[i] = a[i] ]++;
+<span class="lnr">15 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>; i&lt;=m; i++) wws[i] += wws[i-<span class="Constant">1</span>];
+<span class="lnr">16 </span>    <span class="Statement">for</span>(i=n-<span class="Constant">1</span>; i&gt;=<span class="Constant">0</span>; i--)   sa[ --wws[ wa[i] ] ] = i;
+<span class="lnr">17 </span>    <span class="Statement">for</span>(j=<span class="Constant">1</span>,p=<span class="Constant">1</span>; j&lt;n&amp;&amp;p&lt;n; j*=<span class="Constant">2</span>,m=p){        <span class="Comment">//特别注意要写m=p</span>
+<span class="lnr">18 </span>        <span class="Statement">for</span>(i=n-j,p=<span class="Constant">0</span>; i&lt;n; i++)  wb[p++] = i;
+<span class="lnr">19 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  <span class="Statement">if</span>(sa[i] &gt;= j)  wb[p++] = sa[i] - j;
+<span class="lnr">20 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=m; i++)   wws[i] = <span class="Constant">0</span>;
+<span class="lnr">21 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  wv[i] = wa[ wb[i] ];
+<span class="lnr">22 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  wws[ wv[i] ]++;
+<span class="lnr">23 </span>        <span class="Statement">for</span>(i=<span class="Constant">1</span>; i&lt;=m; i++)  wws[i] += wws[i-<span class="Constant">1</span>];
+<span class="lnr">24 </span>        <span class="Statement">for</span>(i=n-<span class="Constant">1</span>; i&gt;=<span class="Constant">0</span>; i--)   sa[ --wws[ wv[i] ] ] = wb[i];
+<span class="lnr">25 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++) wb[i] = wa[i];
+<span class="lnr">26 </span>        <span class="Statement">for</span>(i=<span class="Constant">1</span>,p=<span class="Constant">1</span>,wa[ sa[<span class="Constant">0</span>] ] = <span class="Constant">0</span>; i&lt;n; i++)
+<span class="lnr">27 </span>            wa[ sa[i] ] = cmp(wb, sa[i], sa[i-<span class="Constant">1</span>], j, n) ? p-<span class="Constant">1</span> : p++;
+<span class="lnr">28 </span>    }
+<span class="lnr">29 </span>}
+<span class="lnr">30 </span><span class="Type">void</span> getheight(<span class="Type">int</span> *a, <span class="Type">int</span> *sa, <span class="Type">int</span> n, <span class="Type">int</span> *height){
+<span class="lnr">31 </span>    <span class="Type">int</span> i,j,k,r,w;
+<span class="lnr">32 </span>    k = <span class="Constant">0</span>;
+<span class="lnr">33 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=n; i++)  myrank[ sa[i] ] = i;
+<span class="lnr">34 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; height[ myrank[i++] ] = k)
+<span class="lnr">35 </span>        <span class="Statement">for</span>(k ? k-- : <span class="Constant">0</span>, j = sa[ myrank[i] - <span class="Constant">1</span>]; a[i+k] == a[j+k]; k++);
+<span class="lnr">36 </span>}
+<span class="lnr">37 </span><span class="Type">void</span> getrmq(<span class="Type">int</span> *height, <span class="Type">int</span> n, <span class="Type">int</span> rmq[<span class="Constant">100</span>][MAXN]){
+<span class="lnr">38 </span>    <span class="Type">int</span> i,j,k,r,m;
+<span class="lnr">39 </span>    m = (<span class="Type">double</span>)log((<span class="Type">double</span>)n+<span class="Constant">1</span>) / (<span class="Type">double</span>)log(<span class="Constant">2.0</span>);
+<span class="lnr">40 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=m; i++)
+<span class="lnr">41 </span>        <span class="Statement">for</span>(j=<span class="Constant">0</span>; j&lt;=n; j++)
+<span class="lnr">42 </span>            rmq[i][j] = <span class="Constant">200000000</span>;
+<span class="lnr">43 </span>    <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;=n; i++){
+<span class="lnr">44 </span>        rmq[<span class="Constant">0</span>][i] = height[i];
+<span class="lnr">45 </span>    }
+<span class="lnr">46 </span>    <span class="Statement">for</span>(i=<span class="Constant">1</span>; i&lt;=m; i++)
+<span class="lnr">47 </span>        <span class="Statement">for</span>(j=<span class="Constant">0</span>; j&lt;=n - (<span class="Constant">1</span>&lt;&lt;(i-<span class="Constant">1</span>)) + <span class="Constant">1</span>; j++)
+<span class="lnr">48 </span>            rmq[i][j] = min(rmq[i-<span class="Constant">1</span>][j], rmq[i-<span class="Constant">1</span>][j + ( <span class="Constant">1</span> &lt;&lt; (i-<span class="Constant">1</span>) )]);
+<span class="lnr">49 </span>}
+<span class="lnr">50 </span><span class="Type">int</span> find(<span class="Type">int</span> rmq[<span class="Constant">100</span>][MAXN], <span class="Type">int</span> l, <span class="Type">int</span> r){
+<span class="lnr">51 </span>    <span class="Statement">if</span>(l &gt; r)  swap(l, r);
+<span class="lnr">52 </span>    l++;
+<span class="lnr">53 </span>    <span class="Type">int</span> m = (<span class="Type">double</span>)log((<span class="Type">double</span>)r-l+<span class="Constant">1</span>)/(<span class="Type">double</span>)log(<span class="Constant">2.0</span>);
+<span class="lnr">54 </span>    <span class="Statement">return</span> min(rmq[m][l], rmq[m][r - (<span class="Constant">1</span>&lt;&lt;m) + <span class="Constant">1</span>]);
+<span class="lnr">55 </span>}
+<span class="lnr">56 </span><span class="Type">int</span> main(){
+<span class="lnr">57 </span>    <span class="Type">char</span> s[MAXN];
+<span class="lnr">58 </span>    <span class="Type">int</span> i,j,k;
+<span class="lnr">59 </span>    <span class="Statement">while</span>(scanf(<span class="Constant">&quot; </span><span class="Special">%s</span><span class="Constant">&quot;</span>,s) != <span class="Constant">EOF</span>){
+<span class="lnr">60 </span>        memset(a,<span class="Constant">0</span>,<span class="Statement">sizeof</span>(a));
+<span class="lnr">61 </span>        n = strlen(s);
+<span class="lnr">62 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++)  a[i] = s[i];
+<span class="lnr">63 </span>        a[n] = <span class="Constant">200</span>;
+<span class="lnr">64 </span>        <span class="Statement">for</span>(i=n+<span class="Constant">1</span>; i&lt;=n+n; i++)  a[i] = s[n + n - i];
+<span class="lnr">65 </span>        a[n+n+<span class="Constant">1</span>] = <span class="Constant">0</span>; <span class="Comment">//源字符串长n + n，在末尾加0</span>
+<span class="lnr">66 </span>        getsa(a, n+n+<span class="Constant">2</span>, <span class="Constant">300</span>, sa);  <span class="Comment">//加0后字符串最后一个字符在n + n + 1</span>
+<span class="lnr">67 </span>        getheight(a, sa, n+n+<span class="Constant">1</span>, height);
+<span class="lnr">68 </span>        getrmq(height, n+n+<span class="Constant">1</span>, rmq);
+<span class="lnr">69 </span>        <span class="Type">int</span> ans = -<span class="Constant">1</span>, ansb;
+<span class="lnr">70 </span>        <span class="Statement">for</span>(i=<span class="Constant">0</span>; i&lt;n; i++){
+<span class="lnr">71 </span>            k = find(rmq, myrank[i], myrank[n + n - i]);
+<span class="lnr">72 </span>            <span class="Statement">if</span>(ans &lt; <span class="Constant">2</span>*k - <span class="Constant">1</span>){
+<span class="lnr">73 </span>                ans = <span class="Constant">2</span> * k - <span class="Constant">1</span>;
+<span class="lnr">74 </span>                ansb = i - k + <span class="Constant">1</span>;
+<span class="lnr">75 </span>            }
+<span class="lnr">76 </span>            k = find(rmq, myrank[i], myrank[n + n - i - <span class="Constant">1</span>]);
+<span class="lnr">77 </span>            <span class="Statement">if</span>(ans &lt; (k-<span class="Constant">1</span>) * <span class="Constant">2</span> ){
+<span class="lnr">78 </span>                ans = (k-<span class="Constant">1</span>) * <span class="Constant">2</span>;
+<span class="lnr">79 </span>                ansb = i - (k-<span class="Constant">2</span>);
+<span class="lnr">80 </span>            printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+<span class="lnr">81 </span>            }
+<span class="lnr">82 </span>        }
+<span class="lnr">83 </span>        <span class="Statement">for</span>(i=ansb; i&lt;ansb + ans; i++)
+<span class="lnr">84 </span>            printf(<span class="Constant">&quot;</span><span class="Special">%c</span><span class="Constant">&quot;</span>,a[i]);
+<span class="lnr">85 </span>        printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+<span class="lnr">86 </span>    }
+<span class="lnr">87 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
+<span class="lnr">88 </span>}
 </pre>
 </body>
 </html>

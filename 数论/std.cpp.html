@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<title>E:\Dropbox\acm2013\m模板\数论\std.cpp.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v6">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="use_css,number_lines">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+.lnr { color: #804040; }
+.Comment { color: #0000ff; }
+.Constant { color: #ff00ff; }
+.Statement { color: #804040; font-weight: bold; }
+.Type { color: #2e8b57; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="lnr"> 1 </span><span class="Type">void</span> gcd(lint a, lint b, lint &amp;d, lint &amp;x, lint &amp;y) {
+<span class="lnr"> 2 </span>    <span class="Statement">if</span> (!b) {d = a; x = <span class="Constant">1</span>; y = <span class="Constant">0</span>;}
+<span class="lnr"> 3 </span>    <span class="Statement">else</span> { gcd(b, a % b, d, y, x); y -= x * (a / b);}
+<span class="lnr"> 4 </span>}
+<span class="lnr"> 5 </span>
+<span class="lnr"> 6 </span>lint inv(lint a, lint n) {
+<span class="lnr"> 7 </span>    lint d, x, y;
+<span class="lnr"> 8 </span>    gcd(a, n, d, x, y);
+<span class="lnr"> 9 </span>    <span class="Statement">return</span> d == <span class="Constant">1</span> ? (x + n) % n : -<span class="Constant">1</span>;
+<span class="lnr">10 </span>}
+<span class="lnr">11 </span>
+<span class="lnr">12 </span>lint mulMod(lint a, lint b, lint m = mod) { <span class="Comment">// a * b % m;</span>
+<span class="lnr">13 </span>    <span class="Statement">return</span> a * b % m;
+<span class="lnr">14 </span>}
+<span class="lnr">15 </span>
+<span class="lnr">16 </span>lint powMod(lint a, lint b, lint m = mod) { <span class="Comment">// a ^ b % m;</span>
+<span class="lnr">17 </span>    lint res = <span class="Constant">1</span>;
+<span class="lnr">18 </span>    <span class="Statement">while</span> (b != <span class="Constant">0</span>) {
+<span class="lnr">19 </span>        <span class="Statement">if</span> (b &amp; <span class="Constant">1</span>) {
+<span class="lnr">20 </span>            res = (res * a) % m;
+<span class="lnr">21 </span>        }
+<span class="lnr">22 </span>        a = (a * a) % m;
+<span class="lnr">23 </span>        b &gt;&gt;= <span class="Constant">1</span>;
+<span class="lnr">24 </span>    }
+<span class="lnr">25 </span>    <span class="Statement">return</span> res;
+<span class="lnr">26 </span>}
+<span class="lnr">27 </span>
+<span class="lnr">28 </span>
+<span class="lnr">29 </span>lint logMod(lint a, lint b, lint n = mod) { <span class="Comment">//a ^ x = b (mod n)</span>
+<span class="lnr">30 </span>    lint m, v, e = <span class="Constant">1</span>, i;
+<span class="lnr">31 </span>    m = (<span class="Type">int</span>)sqrt(n + <span class="Constant">0.5</span>);
+<span class="lnr">32 </span>    v = inv(powMod(a, m, n), n);
+<span class="lnr">33 </span>    map &lt;lint, lint &gt; x;
+<span class="lnr">34 </span>    x.clear();
+<span class="lnr">35 </span>    x[<span class="Constant">1</span>] = <span class="Constant">0</span>;
+<span class="lnr">36 </span>    <span class="Statement">for</span> (lint i = <span class="Constant">1</span>; i &lt; m; i++) {
+<span class="lnr">37 </span>        e = mulMod(e, a, n);
+<span class="lnr">38 </span>        <span class="Statement">if</span> (!x.count(e)) x[e] = i;
+<span class="lnr">39 </span>    }
+<span class="lnr">40 </span>    <span class="Statement">for</span> (lint i = <span class="Constant">0</span>; i &lt; m; i++) {
+<span class="lnr">41 </span>        <span class="Statement">if</span> (x.count(b)) <span class="Statement">return</span> i * m + x[b];
+<span class="lnr">42 </span>        b = mulMod(b, v, n);
+<span class="lnr">43 </span>    }
+<span class="lnr">44 </span>    <span class="Statement">return</span> -<span class="Constant">1</span>;
+<span class="lnr">45 </span>}
+</pre>
+</body>
+</html>
